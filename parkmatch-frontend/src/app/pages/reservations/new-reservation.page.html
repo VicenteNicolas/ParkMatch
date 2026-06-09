@@ -1,0 +1,84 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Nueva reserva</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding light-bg">
+  <ion-card class="flat-card">
+    <ion-item lines="none">
+      <ion-thumbnail slot="start">
+        <img alt="Garage" src="assets/images/garage-placeholder.jpg" />
+      </ion-thumbnail>
+      <ion-label>
+        <h2>Garage Privado Cerro Alegre</h2>
+        <p>Precio por hora</p>
+        <h3 class="price-text">$3.000 CLP</h3>
+      </ion-label>
+    </ion-item>
+  </ion-card>
+
+  <h3 class="section-title ion-margin-top">Selecciona fecha y hora</h3>
+
+  <ion-list class="transparent-list">
+    <ion-item lines="full">
+      <ion-icon name="calendar-outline" slot="start" color="primary"></ion-icon>
+      <ion-label position="stacked">Fecha</ion-label>
+      <ion-datetime-button datetime="date-picker"></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime id="date-picker" presentation="date" [(ngModel)]="reservaData.fecha_reserva"></ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+
+    <ion-row>
+      <ion-col size="6">
+        <ion-item lines="full">
+          <ion-icon name="time-outline" slot="start" color="primary"></ion-icon>
+          <ion-label position="stacked">Hora Inicio</ion-label>
+          <ion-datetime-button datetime="time-start"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime id="time-start" presentation="time" [(ngModel)]="reservaData.hora_inicio" (ionChange)="calculateTotal()"></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+      </ion-col>
+      <ion-col size="6">
+        <ion-item lines="full">
+          <ion-icon name="time-outline" slot="start" color="primary"></ion-icon>
+          <ion-label position="stacked">Hora Fin</ion-label>
+          <ion-datetime-button datetime="time-end"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime id="time-end" presentation="time" [(ngModel)]="reservaData.hora_fin" (ionChange)="calculateTotal()"></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-list>
+
+  <ion-card class="summary-card ion-margin-top">
+    <ion-card-content>
+      <ion-row>
+        <ion-col size="6"><p>Duración:</p></ion-col>
+        <ion-col size="6" class="ion-text-right"><strong>{{ hoursCalculated }} horas</strong></ion-col>
+      </ion-row>
+      <ion-row class="total-row">
+        <ion-col size="6"><h3>Total Estimado:</h3></ion-col>
+        <ion-col size="6" class="ion-text-right"><h3>${{ reservaData.monto_total | number }} CLP</h3></ion-col>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-footer class="ion-no-border ion-padding">
+  <ion-button expand="block" color="success" class="action-btn" (click)="confirmReservation()" [disabled]="reservaData.monto_total <= 0">
+    Continuar al pago
+  </ion-button>
+</ion-footer>

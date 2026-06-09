@@ -1,0 +1,14 @@
+# Node
+node_modules
+dist
+.env
+.DS_Store
+*.log
+
+# Docker
+docker-compose.override.yml
+
+# Ionic/Angular
+.angular
+.cache
+.ionic

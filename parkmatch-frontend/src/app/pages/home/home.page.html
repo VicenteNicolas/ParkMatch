@@ -1,0 +1,45 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="light">
+    <ion-title>ParkMatch</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/profile"><ion-icon name="person-circle-outline"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="full-height">
+  <ion-grid class="h-100 p-0">
+    <ion-row class="h-100">
+      
+      <ion-col size="4" class="list-col">
+        <div class="search-header">
+          <h3>Mapa / Búsqueda</h3>
+          <p>{{ estacionamientos.length }} resultados encontrados</p>
+        </div>
+
+        <ion-list>
+          <ion-card *ngFor="let est of estacionamientos" class="parking-card" (click)="iniciarReserva(est)">
+            <img src="assets/images/parking-placeholder.jpg" />
+            <ion-card-header>
+              <ion-card-title>{{ est.direccion }}</ion-card-title>
+              <p><ion-icon name="location-outline"></ion-icon> Valparaíso, Chile</p>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="price-row">
+                <span class="price">${{ est.precio_hora }} CLP / hora</span>
+                <ion-button size="small" color="success">Reservar</ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-list>
+      </ion-col>
+
+      <ion-col size="8" class="map-col">
+        <google-map height="100%" width="100%" [center]="center" [zoom]="zoom">
+          <map-marker *ngFor="let m of marcadores" [position]="m.position"></map-marker>
+        </google-map>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+</ion-content>

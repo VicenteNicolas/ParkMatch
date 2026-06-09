@@ -1,0 +1,40 @@
+.full-height {
+  height: 100%;
+}
+
+.h-100 { height: 100%; }
+.p-0 { padding: 0 !important; }
+
+.list-col {
+  height: 100%;
+  overflow-y: auto; // Hace que la lista tenga scroll propio
+  background: #f8f9fa;
+  border-right: 1px solid #ddd;
+}
+
+.map-col {
+  height: 100%;
+}
+
+.search-header {
+  padding: 16px;
+  h3 { margin: 0; font-weight: bold; }
+  p { color: #666; }
+}
+
+.parking-card {
+  margin: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  &:hover { transform: scale(1.02); }
+  
+  img { height: 120px; object-fit: cover; }
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  .price { font-weight: bold; color: #2a9d8f; }
+}

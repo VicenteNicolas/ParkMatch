@@ -1,0 +1,65 @@
+<ion-content class="auth-background ion-padding">
+  <div class="auth-container">
+    <ion-card class="auth-card">
+      
+      <div class="brand-header ion-text-center">
+        <img src="assets/icon/logo-parkmatch.jpeg" alt="ParkMatch Logo" class="brand-logo" />
+        <h1 class="card-title">Inicia sesión en tu cuenta</h1>
+        <p class="card-subtitle">Bienvenido de nuevo. Ingresa tus datos para continuar.</p>
+      </div>
+
+      <ion-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          
+          <div class="input-group">
+            <label class="input-label">Correo electrónico</label>
+            <ion-item lines="none" class="custom-input">
+              <ion-icon name="mail-outline" slot="start"></ion-icon>
+              <ion-input type="email" formControlName="email" placeholder="ejemplo@correo.com"></ion-input>
+            </ion-item>
+          </div>
+          
+          <div class="input-group">
+            <label class="input-label">Contraseña</label>
+            <ion-item lines="none" class="custom-input">
+              <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+              <ion-input type="password" formControlName="password" placeholder="••••••••"></ion-input>
+              <ion-icon name="eye-outline" slot="end" class="eye-icon"></ion-icon>
+            </ion-item>
+          </div>
+
+          <div class="options-row">
+            <ion-checkbox justify="start" labelPlacement="end">Recordarme</ion-checkbox>
+            <button type="button" class="forgot-btn" routerLink="/forgot-password">
+              ¿Olvidaste tu contraseña?
+            </button>
+          </div>
+
+          <ion-button expand="block" type="submit" [disabled]="loginForm.invalid" class="action-btn">
+            Iniciar sesión
+          </ion-button>
+        </form>
+
+        <div class="divider">
+          <span>o continúa con</span>
+        </div>
+
+        <div class="social-buttons">
+          <ion-button fill="outline" class="social-btn">
+            <ion-icon name="logo-google" slot="start" color="danger"></ion-icon>
+            Continuar con Google
+          </ion-button>
+          <ion-button fill="outline" class="social-btn">
+            <ion-icon name="logo-apple" slot="start" color="dark"></ion-icon>
+            Continuar con Apple
+          </ion-button>
+        </div>
+
+        <div class="footer-text">
+          <p>¿No tienes cuenta? <a routerLink="/register">Regístrate</a></p>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

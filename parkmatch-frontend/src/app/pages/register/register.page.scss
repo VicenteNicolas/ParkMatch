@@ -1,0 +1,202 @@
+// Paleta de colores exacta basada en tu Figma
+$navy-blue: #0b2447;
+$green-accent: #2a9d8f;
+$text-gray: #6b7280;
+$border-light: #e5e7eb;
+
+.auth-background {
+  // Aquí pones la imagen de la ciudad o un color claro.
+  --background: #f4f7fb url('/../../assets/icon/fondo-login.png') no-repeat center center / cover;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  padding: 20px 0; // Para dar espacio de scroll en móviles pequeños
+}
+
+.auth-card {
+  background: #ffffff !important; // Forzamos el blanco
+  border-radius: 20px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 480px;
+  padding: 30px 15px 15px 15px;
+  margin: auto;
+}
+
+.brand-header {
+  margin-bottom: 25px;
+
+  .brand-logo {
+    width: 180px;
+    margin-bottom: 15px;
+  }
+
+  .card-title {
+    color: $navy-blue !important;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0 0 5px 0;
+  }
+
+  .card-subtitle {
+    color: $text-gray !important;
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 0 10px;
+  }
+}
+
+.input-group {
+  margin-bottom: 16px;
+  text-align: left;
+
+  .input-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $text-gray !important;
+    margin-bottom: 6px;
+    padding-left: 2px;
+  }
+
+  .error-msg {
+    color: #eb445a;
+    font-size: 0.75rem;
+    margin-top: 4px;
+    display: block;
+    padding-left: 4px;
+  }
+}
+
+.custom-input {
+  // Forzamos colores para evitar conflictos con el modo oscuro
+  --background: #ffffff !important;
+  --color: #1f2937 !important;
+  --placeholder-color: #9ca3af !important;
+  --placeholder-opacity: 1;
+  --border-radius: 8px;
+  --padding-start: 12px;
+  --inner-padding-end: 12px;
+  
+  border: 1px solid $border-light;
+  border-radius: 8px;
+  box-shadow: none;
+
+  &.item-has-focus {
+    border-color: $navy-blue;
+  }
+
+  ion-icon {
+    color: #9ca3af;
+    font-size: 1.2rem;
+    margin-right: 12px;
+  }
+
+  .eye-icon {
+    cursor: pointer;
+  }
+
+  ion-input, ion-select {
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    font-size: 0.95rem;
+  }
+
+  &.custom-select {
+    ion-select {
+      width: 100%;
+    }
+  }
+}
+
+.terms-row {
+  margin-top: 20px;
+  margin-bottom: 24px;
+
+  ion-checkbox {
+    --size: 18px;
+    --checkbox-background-checked: #2a9d8f;
+    --border-color: #d1d5db;
+    font-size: 0.85rem;
+    color: $text-gray !important;
+    
+    a {
+      color: $green-accent;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+  }
+}
+
+.action-btn {
+  --background: #0b2447;
+  --background-hover: #163661;
+  --color: #ffffff;
+  --border-radius: 8px;
+  --box-shadow: none;
+  height: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 24px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid $border-light;
+  }
+
+  &::before { margin-right: 12px; }
+  &::after { margin-left: 12px; }
+}
+
+.social-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  .social-btn {
+    flex: 1;
+    --color: #374151 !important;
+    --background: #ffffff !important;
+    --border-color: #e5e7eb;
+    --border-width: 1px;
+    --border-radius: 8px;
+    margin: 0;
+    height: 44px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: none;
+
+    ion-icon {
+      font-size: 1.1rem;
+      margin-right: 8px;
+    }
+  }
+}
+
+.footer-text {
+  text-align: center;
+  font-size: 0.9rem;
+  color: $text-gray !important;
+  margin-bottom: 10px;
+
+  a {
+    color: $green-accent;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+}
