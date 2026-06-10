@@ -1,5 +1,5 @@
 <ion-content class="detail-bg">
-  
+
   <header class="top-navbar">
     <div class="brand" (click)="volver()" style="cursor: pointer;">
       <img src="assets/icon/logo-parkmatch.jpeg" alt="ParkMatch" />
@@ -39,37 +39,56 @@
     </div>
   </header>
 
-  <main class="detail-container" *ngIf="estacionamiento">
-    
+  <!-- ✅ MEJORA: Estado de carga -->
+  <div class="loading-state" *ngIf="isLoading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Cargando información del estacionamiento...</p>
+  </div>
+
+  <main class="detail-container" *ngIf="!isLoading && estacionamiento">
+
     <div class="back-link" (click)="volver()">
       <ion-icon name="arrow-back-outline"></ion-icon> Volver a resultados
     </div>
 
     <div class="content-grid">
-      
+
+      <!-- ── Columna galería ──────────────────────────────────── -->
       <div class="gallery-column">
         <div class="main-image">
-          <div class="badge-featured"><ion-icon name="star"></ion-icon> Destacado</div>
-          <button class="btn-heart"><ion-icon name="heart-outline"></ion-icon></button>
-          <img src="assets/images/garage1.jpg" onerror="this.src='assets/icon/fondo-landing.png'" alt="Estacionamiento Principal" />
+          <div class="badge-featured">
+            <ion-icon name="star"></ion-icon> Destacado
+          </div>
+          <button class="btn-heart">
+            <ion-icon name="heart-outline"></ion-icon>
+          </button>
+          <img [src]="imagenActiva"
+               onerror="this.src='assets/icon/fondo-landing.png'"
+               alt="Estacionamiento Principal" />
         </div>
+
         <div class="thumbnails">
-          <img src="assets/images/garage1.jpg" class="active" onerror="this.src='assets/icon/fondo-landing.png'" />
-          <img src="assets/images/garage2.jpg" onerror="this.src='assets/icon/fondo-landing.png'" />
-          <img src="assets/images/garage3.jpg" onerror="this.src='assets/icon/fondo-landing.png'" />
-          <img src="assets/images/garage4.jpg" onerror="this.src='assets/icon/fondo-landing.png'" />
+          <img *ngFor="let img of imagenes"
+               [src]="img"
+               [class.active]="imagenActiva === img"
+               (click)="seleccionarImagen(img)"
+               onerror="this.src='assets/icon/fondo-landing.png'" />
         </div>
       </div>
 
+      <!-- ── Columna información ──────────────────────────────── -->
       <div class="info-column">
-        
-        <div class="status-badge"><span class="dot"></span> Disponible ahora</div>
-        
+
+        <div class="status-badge">
+          <span class="dot"></span> Disponible ahora
+        </div>
+
         <h1 class="title">{{ estacionamiento.nombre }}</h1>
-        
+
         <div class="rating">
-          <ion-icon name="star" class="star"></ion-icon> 
-          <strong>{{ rating }}</strong> <span>({{ reviews }} reseñas)</span>
+          <ion-icon name="star" class="star"></ion-icon>
+          <strong>{{ rating }}</strong>
+          <span>({{ reviews }} reseñas)</span>
         </div>
 
         <div class="price">
@@ -86,17 +105,26 @@
         </div>
 
         <div class="features-row">
-          <div class="feature-tag"><ion-icon name="lock-closed-outline"></ion-icon> Privado</div>
-          <div class="feature-tag"><ion-icon name="business-outline"></ion-icon> Convenio</div>
-          <div class="feature-tag"><ion-icon name="shield-checkmark-outline"></ion-icon> Acceso controlado</div>
-          <div class="feature-tag"><ion-icon name="car-outline"></ion-icon> 1 vehículo</div>
+          <div class="feature-tag">
+            <ion-icon name="lock-closed-outline"></ion-icon> Privado
+          </div>
+          <div class="feature-tag">
+            <ion-icon name="business-outline"></ion-icon> Convenio
+          </div>
+          <div class="feature-tag">
+            <ion-icon name="shield-checkmark-outline"></ion-icon> Acceso controlado
+          </div>
+          <div class="feature-tag">
+            <ion-icon name="car-outline"></ion-icon> 1 vehículo
+          </div>
         </div>
 
         <p class="description">{{ estacionamiento.descripcion }}</p>
 
+        <!-- ── Tarjeta de reserva ──────────────────────────── -->
         <div class="reservation-card">
           <h3>Reserva tu lugar</h3>
-          
+
           <div class="reservation-details">
             <div class="detail-box">
               <ion-icon name="calendar-outline"></ion-icon>
@@ -105,31 +133,57 @@
                 <strong>Hoy, 12 de junio de 2026</strong>
               </div>
             </div>
+
+            <!-- ✅ FIX 4: Controles de duración que sí actualizan el total -->
             <div class="detail-box editable">
               <ion-icon name="time-outline"></ion-icon>
               <div>
                 <span>Duración</span>
                 <strong>{{ duracionHoras }} horas</strong>
               </div>
-              <a href="javascript:void(0)" class="edit-link">Editar</a>
+              <!-- Controles de incremento/decremento -->
+              <div class="duration-controls">
+                <button class="btn-step"
+                        (click)="decrementarDuracion()"
+                        [disabled]="duracionHoras <= 1">
+                  <ion-icon name="remove-outline"></ion-icon>
+                </button>
+                <button class="btn-step"
+                        (click)="incrementarDuracion()"
+                        [disabled]="duracionHoras >= 12">
+                  <ion-icon name="add-outline"></ion-icon>
+                </button>
+              </div>
             </div>
           </div>
 
           <div class="total-row">
             <span>Total estimado</span>
+            <!-- ✅ FIX 4: totalPagar ahora refleja precio real × horas reales -->
             <span class="total-amount">${{ totalPagar | number:'1.0-0' }} CLP</span>
           </div>
 
-          <button class="btn-reserve" (click)="continuarPago()">
+          <button class="btn-reserve" (click)="configurarReserva()">
             Reservar ahora <ion-icon name="chevron-forward-outline"></ion-icon>
           </button>
-          
+
           <div class="secure-payment">
-            <ion-icon name="shield-checkmark-outline"></ion-icon> Pago seguro. Tus datos están protegidos.
+            <ion-icon name="shield-checkmark-outline"></ion-icon>
+            Pago seguro. Tus datos están protegidos.
           </div>
         </div>
 
       </div>
     </div>
   </main>
+
+  <!-- Estado cuando no se encontró el estacionamiento -->
+  <div class="loading-state" *ngIf="!isLoading && !estacionamiento">
+    <ion-icon name="alert-circle-outline" style="font-size: 3rem; color: #ef4444;"></ion-icon>
+    <p>No se pudo cargar el estacionamiento.</p>
+    <button class="btn-reserve" style="width:auto; padding: 12px 24px;" (click)="volver()">
+      Volver a resultados
+    </button>
+  </div>
+
 </ion-content>

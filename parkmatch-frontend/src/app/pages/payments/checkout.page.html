@@ -1,0 +1,158 @@
+<ion-content class="checkout-bg">
+  
+  <header class="top-navbar">
+    <div class="brand" routerLink="/home" style="cursor: pointer;">
+      <img src="assets/icon/logo-parkmatch.jpeg" alt="ParkMatch" />
+    </div>
+
+    <div class="search-controls desktop-only">
+      <div class="control-group input-box">
+        <ion-icon name="location-outline"></ion-icon>
+        <input type="text" value="Valparaíso, Chile" readonly />
+        <ion-icon name="close-outline" class="clear-btn"></ion-icon>
+      </div>
+      <div class="control-group select-box">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <div class="select-text"><span>Hoy, 12 jun</span><br><small>8:00</small></div>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+      <div class="control-group select-box">
+        <ion-icon name="time-outline"></ion-icon>
+        <div class="select-text"><span>Hoy, 12 jun</span><br><small>12:00</small></div>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+    </div>
+
+    <div class="user-actions">
+      <div class="notifications">
+        <ion-icon name="notifications-outline"></ion-icon>
+        <span class="badge">3</span>
+      </div>
+      <div class="profile-menu">
+        <img src="assets/icon/default-profile.png" alt="User" />
+        <span class="desktop-only">Hola, María</span>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+    </div>
+  </header>
+
+  <main class="checkout-container" *ngIf="estacionamiento">
+    
+    <div class="header-section">
+      <h1 class="page-title">Realiza tu pago</h1>
+      <div class="back-link" (click)="volver()">
+        <ion-icon name="arrow-back-outline"></ion-icon> Volver a editar reserva
+      </div>
+    </div>
+
+    <div class="content-grid">
+      
+      <aside class="summary-column">
+        <h3>Resumen de tu reserva</h3>
+        
+        <div class="summary-card">
+          <div class="parking-header">
+            <div class="image-box">
+              <img [src]="estacionamiento.imagen" onerror="this.src='assets/icon/fondo-landing.png'" alt="Estacionamiento" />
+            </div>
+            <div class="info-box">
+              <h4>{{ estacionamiento.nombre }}</h4>
+              <div class="rating"><ion-icon name="star"></ion-icon> 4.8 <span>(128)</span></div>
+              <p class="address">{{ estacionamiento.direccion }}</p>
+            </div>
+          </div>
+
+          <div class="time-details">
+            <div class="detail-row">
+              <span class="label"><ion-icon name="calendar-outline"></ion-icon> Fecha</span>
+              <span class="value">Hoy, 12 de junio de 2026</span>
+            </div>
+            <div class="detail-row">
+              <span class="label"><ion-icon name="time-outline"></ion-icon> Hora de inicio</span>
+              <span class="value">08:00 AM</span>
+            </div>
+            <div class="detail-row">
+              <span class="label"><ion-icon name="time-outline"></ion-icon> Hora de finalización</span>
+              <span class="value">12:00 PM</span>
+            </div>
+            <div class="detail-row">
+              <span class="label"><ion-icon name="time-outline"></ion-icon> Duración</span>
+              <span class="value">4 horas</span>
+            </div>
+          </div>
+
+          <div class="total-box">
+            <span>Total a pagar</span>
+            <span class="amount">${{ totalPagar | number:'1.0-0' }} CLP</span>
+          </div>
+          
+          <div class="secure-badge">
+            <ion-icon name="shield-checkmark-outline"></ion-icon> Transacción segura
+          </div>
+        </div>
+      </aside>
+
+      <section class="payment-column">
+        <h3>Selecciona tu método de pago</h3>
+        
+        <div class="payment-methods">
+          
+          <div class="method-card" 
+               [class.active]="metodoPagoSeleccionado === 'tarjeta'" 
+               (click)="seleccionarMetodo('tarjeta')">
+            <div class="radio-circle"><div class="inner" *ngIf="metodoPagoSeleccionado === 'tarjeta'"></div></div>
+            <ion-icon name="card-outline" class="method-icon"></ion-icon>
+            <div class="method-info">
+              <h4>Tarjeta de crédito / débito</h4>
+              <p>Termina en 4242</p>
+            </div>
+            <div class="card-logos">
+              <span class="logo visa">VISA</span>
+              <span class="logo mc">MC</span>
+            </div>
+          </div>
+
+          <div class="method-card" 
+               [class.active]="metodoPagoSeleccionado === 'transferencia'" 
+               (click)="seleccionarMetodo('transferencia')">
+            <div class="radio-circle"><div class="inner" *ngIf="metodoPagoSeleccionado === 'transferencia'"></div></div>
+            <ion-icon name="cash-outline" class="method-icon"></ion-icon>
+            <div class="method-info">
+              <h4>Transferencia bancaria</h4>
+              <p>Vía Khipu o pago manual</p>
+            </div>
+          </div>
+
+          <div class="method-card" 
+               [class.active]="metodoPagoSeleccionado === 'saldo'" 
+               (click)="seleccionarMetodo('saldo')">
+            <div class="radio-circle"><div class="inner" *ngIf="metodoPagoSeleccionado === 'saldo'"></div></div>
+            <ion-icon name="wallet-outline" class="method-icon"></ion-icon>
+            <div class="method-info">
+              <h4>Saldo en tu cuenta</h4>
+              <p>Tienes $15.000 CLP disponibles</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-section">
+          <div class="total-summary">
+            <span>Total a pagar:</span>
+            <strong>${{ totalPagar | number:'1.0-0' }} CLP</strong>
+          </div>
+          
+          <button class="btn-pay" (click)="procesarPago()" [disabled]="procesando">
+            <ion-spinner name="crescent" *ngIf="procesando"></ion-spinner>
+            <span *ngIf="!procesando"><ion-icon name="lock-closed-outline"></ion-icon> Pagar ${{ totalPagar | number:'1.0-0' }} CLP</span>
+          </button>
+          
+          <p class="footer-note">
+            <ion-icon name="shield-checkmark-outline"></ion-icon> El pago será procesado de forma segura y encriptada por Webpay/Stripe.
+          </p>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+</ion-content>

@@ -4,17 +4,15 @@ import { AuthGuard } from './guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'landing', // Cambiamos el inicio por defecto
+    redirectTo: 'landing',
     pathMatch: 'full',
   },
   {
     path: 'landing',
-    // Aquí irá tu nueva Landing Page (Primera imagen)
     loadComponent: () => import('./pages/landing/landing.page').then((m) => m.LandingPage),
   },
   {
-    path: 'search', 
-    // Este será tu mapa de búsqueda (Segunda imagen). ¡Sin AuthGuard!
+    path: 'search',
     loadComponent: () => import('./pages/home/home.page').then((m) => m.HomePage),
   },
   {
@@ -28,8 +26,16 @@ export const routes: Routes = [
   {
     path: 'reservations/new',
     loadComponent: () => import('./pages/reservations/new-reservation.page').then((m) => m.NewReservationPage),
-    // La reserva SÍ está fuertemente protegida
     canActivate: [AuthGuard],
     data: { roles: ['Conductor'] }
+  },
+  {
+    path: 'reservations/booking',
+    loadComponent: () => import('./pages/reservations/booking/booking.page').then(m => m.BookingPage)
+  },
+  {
+    path: 'payments/checkout',
+    loadComponent: () => import('./pages/payments/checkout.page').then(m => m.CheckoutPage)
   }
+
 ];

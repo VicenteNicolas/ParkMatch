@@ -1,0 +1,180 @@
+<ion-content class="booking-bg">
+
+  <header class="top-navbar">
+    <div class="brand" routerLink="/home" style="cursor: pointer;">
+      <img src="assets/icon/logo-parkmatch.jpeg" alt="ParkMatch" />
+    </div>
+
+    <div class="search-controls desktop-only">
+      <div class="control-group input-box">
+        <ion-icon name="location-outline"></ion-icon>
+        <input type="text" value="Valparaíso, Chile" readonly />
+        <ion-icon name="close-outline" class="clear-btn"></ion-icon>
+      </div>
+      <div class="control-group select-box">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <div class="select-text"><span>12 jun 2026</span><br><small>10:00</small></div>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+      <div class="control-group select-box">
+        <ion-icon name="time-outline"></ion-icon>
+        <div class="select-text"><span>12 jun 2026</span><br><small>13:00</small></div>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+      <button class="filter-btn">
+        <ion-icon name="filter-outline"></ion-icon> Filtros
+      </button>
+    </div>
+
+    <div class="user-actions">
+      <div class="notifications">
+        <ion-icon name="notifications-outline"></ion-icon>
+        <span class="badge">3</span>
+      </div>
+      <div class="profile-menu">
+        <img src="assets/icon/default-profile.png" alt="User" />
+        <span class="desktop-only">Hola, María</span>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+    </div>
+  </header>
+
+  <div class="loading-state" *ngIf="isLoading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Cargando información...</p>
+  </div>
+
+  <main class="main-wrapper" *ngIf="!isLoading && estacionamiento">
+
+    <div class="booking-card">
+
+      <div class="header-title">
+        <button class="btn-back" (click)="volver()">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </button>
+        <div>
+          <h1>Nueva reserva</h1>
+          <p>Revisa los detalles y confirma tu reserva</p>
+        </div>
+      </div>
+
+      <div class="property-info-card">
+        <img [src]="estacionamiento.imagen" alt="Garage" class="property-img">
+
+        <div class="property-details">
+          <h2>{{ estacionamiento.nombre }}</h2>
+          <p class="location">
+            <ion-icon name="location-outline"></ion-icon> {{ estacionamiento.direccion }}
+          </p>
+          <span class="badge">Privado (Convenio)</span>
+          <div class="meta-info">
+            <span class="rating">
+              <ion-icon name="star"></ion-icon> 4.8 (124)
+            </span>
+            <span class="divider">|</span>
+            <span class="walk">
+              <ion-icon name="walk-outline"></ion-icon> 4 min (300 m)
+            </span>
+          </div>
+        </div>
+
+        <div class="property-price">
+          <p>Precio por hora</p>
+          <h3>${{ estacionamiento.precio_hora | number:'1.0-0' }} CLP</h3>
+          <small>Espacio privado mediante convenio</small>
+        </div>
+      </div>
+
+      <form [formGroup]="reservaForm" class="form-section">
+        <h3>Selecciona fecha y hora</h3>
+
+        <div class="inputs-row">
+          <div class="input-box">
+            <label>Fecha</label>
+            <div class="input-wrapper">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <input type="date" formControlName="fecha" [min]="fechaMinima">
+            </div>
+          </div>
+
+          <div class="input-box">
+            <label>Hora de inicio</label>
+            <div class="input-wrapper">
+              <ion-icon name="time-outline"></ion-icon>
+              <input type="time" formControlName="horaInicio" step="1800">
+            </div>
+          </div>
+
+          <div class="input-box">
+            <label>Hora de término</label>
+            <div class="input-wrapper" [class.input-error]="horasInvalidas">
+              <ion-icon name="time-outline"></ion-icon>
+              <input type="time" formControlName="horaTermino" [min]="horaMinimaTermino" step="1800">
+            </div>
+            <p class="error-msg" *ngIf="horasInvalidas">
+              La hora de término debe ser mayor que la de inicio.
+            </p>
+          </div>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-title">
+            <h3>Resumen de<br>tu reserva</h3>
+          </div>
+
+          <div class="summary-stats">
+            <div class="stat-item">
+              <div class="icon-circle"><ion-icon name="time-outline"></ion-icon></div>
+              <div>
+                <p>Duración</p>
+                <h4>{{ horasInvalidas ? '—' : duracionCalculada + ' horas' }}</h4>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <div class="icon-circle"><ion-icon name="pricetag-outline"></ion-icon></div>
+              <div>
+                <p>Precio por hora</p>
+                <h4>${{ estacionamiento.precio_hora | number:'1.0-0' }} CLP</h4>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <div class="icon-circle"><ion-icon name="wallet-outline"></ion-icon></div>
+              <div>
+                <p>Total</p>
+                <h4>{{ horasInvalidas ? '—' : ('$' + (totalPagar | number:'1.0-0') + ' CLP') }}</h4>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-banner">
+            <ion-icon name="information-circle-outline"></ion-icon>
+            Este es un espacio privado de uso residencial, disponible mediante convenio con el propietario.
+          </div>
+        </div>
+
+        <button type="button" class="btn-confirm"
+                [disabled]="!formularioValido"
+                (click)="confirmarReserva()">
+          <ion-icon name="lock-closed-outline"></ion-icon> Confirmar reserva
+        </button>
+
+        <p class="security-note">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          <span><strong>Tu reserva está protegida.</strong><br>Puedes cancelar sin costo hasta 2 horas antes.</span>
+        </p>
+
+      </form>
+    </div>
+  </main>
+
+  <div class="loading-state" *ngIf="!isLoading && !estacionamiento">
+    <ion-icon name="alert-circle-outline" style="font-size: 3rem; color: #ef4444;"></ion-icon>
+    <p>No se pudo cargar el estacionamiento.</p>
+    <button class="btn-confirm" style="width:auto; padding: 12px 24px;" (click)="volver()">
+      Volver
+    </button>
+  </div>
+
+</ion-content>

@@ -4,11 +4,12 @@ import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { addIcons } from 'ionicons';
-import { 
-  arrowBackOutline, locationOutline, calendarOutline, 
+import {
+  arrowBackOutline, locationOutline, calendarOutline,
   timeOutline, shieldCheckmarkOutline, star, heartOutline,
   lockClosedOutline, businessOutline, carOutline, chevronForwardOutline,
-  searchOutline, closeOutline, filterOutline, notificationsOutline, chevronDownOutline
+  searchOutline, closeOutline, filterOutline, notificationsOutline,
+  chevronDownOutline, addOutline, removeOutline
 } from 'ionicons/icons';
 
 interface EstacionamientoDetalle {
@@ -29,13 +30,35 @@ interface EstacionamientoDetalle {
 export class NewReservationPage implements OnInit {
   estacionamientoId: number | null = null;
   estacionamiento: EstacionamientoDetalle | null = null;
-  
-  // Datos simulados para la UI (ya que la BD original no los incluye)
-  duracionHoras: number = 4;
-  totalPagar: number = 12000;
+
+  // Lógica de Galería
+  imagenes: string[] = [
+    'assets/images/garage1.jpg',
+    'assets/images/garage2.jpg',
+    'assets/images/garage3.jpg',
+    'assets/images/garage4.jpg'
+  ];
+  imagenActiva: string = this.imagenes[0];
+
+  // Datos de Reserva
+  private _duracionHoras: number = 4;
+  get duracionHoras(): number { return this._duracionHoras; }
+  set duracionHoras(val: number) {
+    this._duracionHoras = val;
+    this.calcularTotal(); // recalcula cada vez que cambia
+  }
+
+  totalPagar: number = 0; 
   distancia: string = '0,3 km';
   rating: number = 4.8;
   reviews: number = 128;
+
+
+  isLoading: boolean = true;
+
+  // Límites de duración
+  readonly DURACION_MIN = 1;
+  readonly DURACION_MAX = 12;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,14 +66,24 @@ export class NewReservationPage implements OnInit {
     private http: HttpClient
   ) {
     addIcons({
-      'arrow-back-outline': arrowBackOutline, 'location-outline': locationOutline,
-      'calendar-outline': calendarOutline, 'time-outline': timeOutline,
-      'shield-checkmark-outline': shieldCheckmarkOutline, 'star': star,
-      'heart-outline': heartOutline, 'lock-closed-outline': lockClosedOutline,
-      'business-outline': businessOutline, 'car-outline': carOutline,
-      'chevron-forward-outline': chevronForwardOutline, 'search-outline': searchOutline,
-      'close-outline': closeOutline, 'filter-outline': filterOutline,
-      'notifications-outline': notificationsOutline, 'chevron-down-outline': chevronDownOutline
+      'arrow-back-outline':        arrowBackOutline,
+      'location-outline':          locationOutline,
+      'calendar-outline':          calendarOutline,
+      'time-outline':              timeOutline,
+      'shield-checkmark-outline':  shieldCheckmarkOutline,
+      'star':                      star,
+      'heart-outline':             heartOutline,
+      'lock-closed-outline':       lockClosedOutline,
+      'business-outline':          businessOutline,
+      'car-outline':               carOutline,
+      'chevron-forward-outline':   chevronForwardOutline,
+      'search-outline':            searchOutline,
+      'close-outline':             closeOutline,
+      'filter-outline':            filterOutline,
+      'notifications-outline':     notificationsOutline,
+      'chevron-down-outline':      chevronDownOutline,
+      'add-outline':               addOutline,
+      'remove-outline':            removeOutline
     });
   }
 
@@ -60,34 +93,65 @@ export class NewReservationPage implements OnInit {
         this.estacionamientoId = Number(params['id']);
         this.cargarDetalleEstacionamiento(this.estacionamientoId);
       }
+      
+      if (params['duracion']) {
+        this.duracionHoras = Number(params['duracion']);
+        this.calcularTotal(); // Recalcula el precio inmediatamente
+      }
     });
   }
 
   cargarDetalleEstacionamiento(id: number) {
-    // Para simplificar y no crear un nuevo endpoint ahora, usamos los datos disponibles
-    this.http.get<{ok: boolean, data: any[]}>('http://localhost:3000/api/parkings/available')
+    this.isLoading = true;
+    this.http.get<{ ok: boolean; data: any[] }>('http://localhost:3000/api/parkings/available')
       .subscribe({
         next: (res) => {
           if (res.ok) {
             const encontrado = res.data.find(e => e.id === id);
             if (encontrado) {
               this.estacionamiento = {
-                id: encontrado.id,
-                direccion: encontrado.direccion,
+                id:          encontrado.id,
+                direccion:   encontrado.direccion,
                 precio_hora: encontrado.precio_hora,
-                descripcion: encontrado.descripcion || 'Espacio privado dentro de propiedad residencial, disponible a través de convenio con el dueño o la administración del edificio. Ideal para estadías cortas o largas. Seguro, tranquilo y de fácil acceso en el corazón de Cerro Alegre.',
-                nombre: 'Garage Privado Cerro Alegre' // Simulado para coincidir con el diseño
+                descripcion: encontrado.descripcion ||
+                  'Espacio privado dentro de propiedad residencial, disponible a través de ' +
+                  'convenio con el dueño o la administración del edificio. Ideal para estadías ' +
+                  'cortas o largas. Seguro, tranquilo y de fácil acceso en el corazón de Cerro Alegre.',
+                nombre: 'Garage Privado Cerro Alegre'
               };
               this.calcularTotal();
             }
           }
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
         }
       });
   }
 
+  // Cambia la imagen principal de la galería
+  seleccionarImagen(img: string) {
+    this.imagenActiva = img;
+  }
+
+
   calcularTotal() {
     if (this.estacionamiento) {
-      this.totalPagar = this.duracionHoras * this.estacionamiento.precio_hora;
+      this.totalPagar = this._duracionHoras * this.estacionamiento.precio_hora;
+    }
+  }
+
+
+  incrementarDuracion() {
+    if (this._duracionHoras < this.DURACION_MAX) {
+      this.duracionHoras = this._duracionHoras + 1; // usa el setter
+    }
+  }
+
+  decrementarDuracion() {
+    if (this._duracionHoras > this.DURACION_MIN) {
+      this.duracionHoras = this._duracionHoras - 1; // usa el setter
     }
   }
 
@@ -95,12 +159,12 @@ export class NewReservationPage implements OnInit {
     this.router.navigate(['/search']);
   }
 
-  continuarPago() {
+  configurarReserva() {
     if (this.estacionamientoId) {
-      this.router.navigate(['/payments/checkout'], { 
+      this.router.navigate(['/reservations/booking'], { 
         queryParams: { 
-          id_estacionamiento: this.estacionamientoId,
-          total: this.totalPagar 
+          id: this.estacionamientoId,
+          duracion: this.duracionHoras 
         } 
       });
     }
