@@ -1,84 +1,135 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Nueva reserva</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="detail-bg">
+  
+  <header class="top-navbar">
+    <div class="brand" (click)="volver()" style="cursor: pointer;">
+      <img src="assets/icon/logo-parkmatch.jpeg" alt="ParkMatch" />
+    </div>
 
-<ion-content class="ion-padding light-bg">
-  <ion-card class="flat-card">
-    <ion-item lines="none">
-      <ion-thumbnail slot="start">
-        <img alt="Garage" src="assets/images/garage-placeholder.jpg" />
-      </ion-thumbnail>
-      <ion-label>
-        <h2>Garage Privado Cerro Alegre</h2>
-        <p>Precio por hora</p>
-        <h3 class="price-text">$3.000 CLP</h3>
-      </ion-label>
-    </ion-item>
-  </ion-card>
+    <div class="search-controls desktop-only">
+      <div class="control-group input-box">
+        <ion-icon name="location-outline"></ion-icon>
+        <input type="text" value="Valparaíso, Chile" readonly />
+        <ion-icon name="close-outline" class="clear-btn"></ion-icon>
+      </div>
+      <div class="control-group select-box">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <div class="select-text"><span>Hoy, 12 jun</span><br><small>8:00</small></div>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+      <div class="control-group select-box">
+        <ion-icon name="time-outline"></ion-icon>
+        <div class="select-text"><span>Hoy, 12 jun</span><br><small>12:00</small></div>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+      <button class="filter-btn">
+        <ion-icon name="filter-outline"></ion-icon> Filtros
+      </button>
+    </div>
 
-  <h3 class="section-title ion-margin-top">Selecciona fecha y hora</h3>
+    <div class="user-actions">
+      <div class="notifications">
+        <ion-icon name="notifications-outline"></ion-icon>
+        <span class="badge">3</span>
+      </div>
+      <div class="profile-menu">
+        <img src="assets/icon/default-profile.png" alt="User" />
+        <span class="desktop-only">Hola, María</span>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+    </div>
+  </header>
 
-  <ion-list class="transparent-list">
-    <ion-item lines="full">
-      <ion-icon name="calendar-outline" slot="start" color="primary"></ion-icon>
-      <ion-label position="stacked">Fecha</ion-label>
-      <ion-datetime-button datetime="date-picker"></ion-datetime-button>
-      <ion-modal [keepContentsMounted]="true">
-        <ng-template>
-          <ion-datetime id="date-picker" presentation="date" [(ngModel)]="reservaData.fecha_reserva"></ion-datetime>
-        </ng-template>
-      </ion-modal>
-    </ion-item>
+  <main class="detail-container" *ngIf="estacionamiento">
+    
+    <div class="back-link" (click)="volver()">
+      <ion-icon name="arrow-back-outline"></ion-icon> Volver a resultados
+    </div>
 
-    <ion-row>
-      <ion-col size="6">
-        <ion-item lines="full">
-          <ion-icon name="time-outline" slot="start" color="primary"></ion-icon>
-          <ion-label position="stacked">Hora Inicio</ion-label>
-          <ion-datetime-button datetime="time-start"></ion-datetime-button>
-          <ion-modal [keepContentsMounted]="true">
-            <ng-template>
-              <ion-datetime id="time-start" presentation="time" [(ngModel)]="reservaData.hora_inicio" (ionChange)="calculateTotal()"></ion-datetime>
-            </ng-template>
-          </ion-modal>
-        </ion-item>
-      </ion-col>
-      <ion-col size="6">
-        <ion-item lines="full">
-          <ion-icon name="time-outline" slot="start" color="primary"></ion-icon>
-          <ion-label position="stacked">Hora Fin</ion-label>
-          <ion-datetime-button datetime="time-end"></ion-datetime-button>
-          <ion-modal [keepContentsMounted]="true">
-            <ng-template>
-              <ion-datetime id="time-end" presentation="time" [(ngModel)]="reservaData.hora_fin" (ionChange)="calculateTotal()"></ion-datetime>
-            </ng-template>
-          </ion-modal>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-  </ion-list>
+    <div class="content-grid">
+      
+      <div class="gallery-column">
+        <div class="main-image">
+          <div class="badge-featured"><ion-icon name="star"></ion-icon> Destacado</div>
+          <button class="btn-heart"><ion-icon name="heart-outline"></ion-icon></button>
+          <img src="assets/images/garage1.jpg" onerror="this.src='assets/icon/fondo-landing.png'" alt="Estacionamiento Principal" />
+        </div>
+        <div class="thumbnails">
+          <img src="assets/images/garage1.jpg" class="active" onerror="this.src='assets/icon/fondo-landing.png'" />
+          <img src="assets/images/garage2.jpg" onerror="this.src='assets/icon/fondo-landing.png'" />
+          <img src="assets/images/garage3.jpg" onerror="this.src='assets/icon/fondo-landing.png'" />
+          <img src="assets/images/garage4.jpg" onerror="this.src='assets/icon/fondo-landing.png'" />
+        </div>
+      </div>
 
-  <ion-card class="summary-card ion-margin-top">
-    <ion-card-content>
-      <ion-row>
-        <ion-col size="6"><p>Duración:</p></ion-col>
-        <ion-col size="6" class="ion-text-right"><strong>{{ hoursCalculated }} horas</strong></ion-col>
-      </ion-row>
-      <ion-row class="total-row">
-        <ion-col size="6"><h3>Total Estimado:</h3></ion-col>
-        <ion-col size="6" class="ion-text-right"><h3>${{ reservaData.monto_total | number }} CLP</h3></ion-col>
-      </ion-row>
-    </ion-card-content>
-  </ion-card>
+      <div class="info-column">
+        
+        <div class="status-badge"><span class="dot"></span> Disponible ahora</div>
+        
+        <h1 class="title">{{ estacionamiento.nombre }}</h1>
+        
+        <div class="rating">
+          <ion-icon name="star" class="star"></ion-icon> 
+          <strong>{{ rating }}</strong> <span>({{ reviews }} reseñas)</span>
+        </div>
+
+        <div class="price">
+          <span class="amount">${{ estacionamiento.precio_hora | number:'1.0-0' }}</span>
+          <span class="unit">CLP / hora</span>
+        </div>
+
+        <div class="location-info">
+          <ion-icon name="location-outline"></ion-icon>
+          <div>
+            <p>{{ estacionamiento.direccion }}</p>
+            <span class="distance">{{ distancia }} de tu ubicación</span>
+          </div>
+        </div>
+
+        <div class="features-row">
+          <div class="feature-tag"><ion-icon name="lock-closed-outline"></ion-icon> Privado</div>
+          <div class="feature-tag"><ion-icon name="business-outline"></ion-icon> Convenio</div>
+          <div class="feature-tag"><ion-icon name="shield-checkmark-outline"></ion-icon> Acceso controlado</div>
+          <div class="feature-tag"><ion-icon name="car-outline"></ion-icon> 1 vehículo</div>
+        </div>
+
+        <p class="description">{{ estacionamiento.descripcion }}</p>
+
+        <div class="reservation-card">
+          <h3>Reserva tu lugar</h3>
+          
+          <div class="reservation-details">
+            <div class="detail-box">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <div>
+                <span>Fecha</span>
+                <strong>Hoy, 12 de junio de 2026</strong>
+              </div>
+            </div>
+            <div class="detail-box editable">
+              <ion-icon name="time-outline"></ion-icon>
+              <div>
+                <span>Duración</span>
+                <strong>{{ duracionHoras }} horas</strong>
+              </div>
+              <a href="javascript:void(0)" class="edit-link">Editar</a>
+            </div>
+          </div>
+
+          <div class="total-row">
+            <span>Total estimado</span>
+            <span class="total-amount">${{ totalPagar | number:'1.0-0' }} CLP</span>
+          </div>
+
+          <button class="btn-reserve" (click)="continuarPago()">
+            Reservar ahora <ion-icon name="chevron-forward-outline"></ion-icon>
+          </button>
+          
+          <div class="secure-payment">
+            <ion-icon name="shield-checkmark-outline"></ion-icon> Pago seguro. Tus datos están protegidos.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
 </ion-content>
-
-<ion-footer class="ion-no-border ion-padding">
-  <ion-button expand="block" color="success" class="action-btn" (click)="confirmReservation()" [disabled]="reservaData.monto_total <= 0">
-    Continuar al pago
-  </ion-button>
-</ion-footer>

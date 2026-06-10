@@ -1,92 +1,108 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { HttpClientModule } from '@angular/common/http';
-import { TransactionService } from '../../services/transaction.service';
-import { LoadingController, AlertController } from '@ionic/angular';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { addIcons } from 'ionicons';
+import { 
+  arrowBackOutline, locationOutline, calendarOutline, 
+  timeOutline, shieldCheckmarkOutline, star, heartOutline,
+  lockClosedOutline, businessOutline, carOutline, chevronForwardOutline,
+  searchOutline, closeOutline, filterOutline, notificationsOutline, chevronDownOutline
+} from 'ionicons/icons';
+
+interface EstacionamientoDetalle {
+  id: number;
+  direccion: string;
+  precio_hora: number;
+  descripcion: string;
+  nombre: string;
+}
 
 @Component({
   selector: 'app-new-reservation',
   templateUrl: './new-reservation.page.html',
   styleUrls: ['./new-reservation.page.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule,
-    HttpClientModule
-  ]
+  imports: [CommonModule, IonicModule, RouterModule, HttpClientModule]
 })
-export class NewReservationPage {
-  reservaData = {
-    id_estacionamiento: 1, 
-    fecha_reserva: new Date().toISOString(),
-    hora_inicio: '',
-    hora_fin: '',
-    monto_total: 0
-  };
+export class NewReservationPage implements OnInit {
+  estacionamientoId: number | null = null;
+  estacionamiento: EstacionamientoDetalle | null = null;
   
-  hoursCalculated = 0;
-  precioPorHora = 3000;
+  // Datos simulados para la UI (ya que la BD original no los incluye)
+  duracionHoras: number = 4;
+  totalPagar: number = 12000;
+  distancia: string = '0,3 km';
+  rating: number = 4.8;
+  reviews: number = 128;
 
   constructor(
-    private transactionService: TransactionService,
+    private route: ActivatedRoute,
     private router: Router,
-    private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController
-  ) {}
+    private http: HttpClient
+  ) {
+    addIcons({
+      'arrow-back-outline': arrowBackOutline, 'location-outline': locationOutline,
+      'calendar-outline': calendarOutline, 'time-outline': timeOutline,
+      'shield-checkmark-outline': shieldCheckmarkOutline, 'star': star,
+      'heart-outline': heartOutline, 'lock-closed-outline': lockClosedOutline,
+      'business-outline': businessOutline, 'car-outline': carOutline,
+      'chevron-forward-outline': chevronForwardOutline, 'search-outline': searchOutline,
+      'close-outline': closeOutline, 'filter-outline': filterOutline,
+      'notifications-outline': notificationsOutline, 'chevron-down-outline': chevronDownOutline
+    });
+  }
 
-  calculateTotal() {
-    if (!this.reservaData.hora_inicio || !this.reservaData.hora_fin) return;
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params['id']) {
+        this.estacionamientoId = Number(params['id']);
+        this.cargarDetalleEstacionamiento(this.estacionamientoId);
+      }
+    });
+  }
 
-    const start = new Date(this.reservaData.hora_inicio);
-    const end = new Date(this.reservaData.hora_fin);
-    
-    let diffMs = end.getTime() - start.getTime();
-    let diffHrs = diffMs / (1000 * 60 * 60);
+  cargarDetalleEstacionamiento(id: number) {
+    // Para simplificar y no crear un nuevo endpoint ahora, usamos los datos disponibles
+    this.http.get<{ok: boolean, data: any[]}>('http://localhost:3000/api/parkings/available')
+      .subscribe({
+        next: (res) => {
+          if (res.ok) {
+            const encontrado = res.data.find(e => e.id === id);
+            if (encontrado) {
+              this.estacionamiento = {
+                id: encontrado.id,
+                direccion: encontrado.direccion,
+                precio_hora: encontrado.precio_hora,
+                descripcion: encontrado.descripcion || 'Espacio privado dentro de propiedad residencial, disponible a través de convenio con el dueño o la administración del edificio. Ideal para estadías cortas o largas. Seguro, tranquilo y de fácil acceso en el corazón de Cerro Alegre.',
+                nombre: 'Garage Privado Cerro Alegre' // Simulado para coincidir con el diseño
+              };
+              this.calcularTotal();
+            }
+          }
+        }
+      });
+  }
 
-    if (diffHrs > 0) {
-      this.hoursCalculated = Math.ceil(diffHrs); 
-      this.reservaData.monto_total = this.hoursCalculated * this.precioPorHora;
-    } else {
-      this.hoursCalculated = 0;
-      this.reservaData.monto_total = 0;
+  calcularTotal() {
+    if (this.estacionamiento) {
+      this.totalPagar = this.duracionHoras * this.estacionamiento.precio_hora;
     }
   }
 
-  async confirmReservation() {
-    const loading = await this.loadingCtrl.create({
-      message: 'Verificando disponibilidad...',
-      spinner: 'dots'
-    });
-    await loading.present();
+  volver() {
+    this.router.navigate(['/search']);
+  }
 
-    const payload = {
-      ...this.reservaData,
-      fecha_reserva: this.reservaData.fecha_reserva.split('T')[0],
-      hora_inicio: new Date(this.reservaData.hora_inicio).toTimeString().split(' ')[0],
-      hora_fin: new Date(this.reservaData.hora_fin).toTimeString().split(' ')[0]
-    };
-
-    this.transactionService.createReservation(payload).subscribe({
-      next: (res) => {
-        loading.dismiss();
-        if (res.ok) {
-          this.router.navigate(['/payment', res.id_reserva, this.reservaData.monto_total]);
-        }
-      },
-      error: async (err) => {
-        loading.dismiss();
-        const alert = await this.alertCtrl.create({
-          header: 'Espacio no disponible',
-          message: err.error?.message || 'Ha ocurrido un error al procesar tu solicitud.',
-          buttons: ['Entendido']
-        });
-        await alert.present();
-      }
-    });
+  continuarPago() {
+    if (this.estacionamientoId) {
+      this.router.navigate(['/payments/checkout'], { 
+        queryParams: { 
+          id_estacionamiento: this.estacionamientoId,
+          total: this.totalPagar 
+        } 
+      });
+    }
   }
 }

@@ -1,40 +1,240 @@
-.full-height {
-  height: 100%;
-}
+$navy-blue: #0b2447;
+$green-accent: #2a9d8f;
+$border-color: #e5e7eb;
+$text-gray: #6b7280;
 
-.h-100 { height: 100%; }
-.p-0 { padding: 0 !important; }
-
-.list-col {
-  height: 100%;
-  overflow-y: auto; // Hace que la lista tenga scroll propio
-  background: #f8f9fa;
-  border-right: 1px solid #ddd;
-}
-
-.map-col {
-  height: 100%;
-}
-
-.search-header {
-  padding: 16px;
-  h3 { margin: 0; font-weight: bold; }
-  p { color: #666; }
-}
-
-.parking-card {
-  margin: 10px;
-  cursor: pointer;
-  transition: transform 0.2s;
-  &:hover { transform: scale(1.02); }
+.search-layout {
+  --background: #ffffff;
   
-  img { height: 120px; object-fit: cover; }
+  // Usamos un flexbox de toda la altura de la pantalla
+  &::part(scroll) {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
 }
 
-.price-row {
+/* CABECERA NAVBAR */
+.top-navbar {
+  flex: 0 0 80px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
-  .price { font-weight: bold; color: #2a9d8f; }
+  justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid $border-color;
+  background: white;
+  z-index: 10;
+
+  .brand img { height: 40px; }
+
+  .search-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      padding: 8px 16px;
+      height: 48px;
+      background: #fdfdfd;
+
+      ion-icon { color: $text-gray; font-size: 1.2rem; }
+    }
+
+    .input-box {
+      width: 250px;
+      input {
+        border: none; outline: none; background: transparent;
+        width: 100%; margin: 0 10px; font-weight: 500; color: $navy-blue;
+      }
+      .clear-btn { cursor: pointer; }
+    }
+
+    .select-box {
+      cursor: pointer;
+      gap: 12px;
+      .select-text {
+        line-height: 1.2;
+        span { font-size: 0.85rem; color: $text-gray; }
+        small { font-size: 0.95rem; font-weight: 600; color: $navy-blue; }
+      }
+    }
+
+    .filter-btn {
+      display: flex; align-items: center; gap: 8px;
+      background: $navy-blue; color: white;
+      border: none; border-radius: 8px;
+      padding: 0 20px; height: 48px; font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
+  .user-actions {
+    display: flex; align-items: center; gap: 24px;
+
+    .notifications {
+      position: relative; cursor: pointer;
+      ion-icon { font-size: 1.5rem; color: $navy-blue; }
+      .badge {
+        position: absolute; top: -5px; right: -5px;
+        background: $green-accent; color: white;
+        font-size: 0.7rem; font-weight: bold;
+        width: 18px; height: 18px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+      }
+    }
+
+    .profile-menu {
+      display: flex; align-items: center; gap: 10px; cursor: pointer;
+      img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+      span { font-weight: 600; color: $navy-blue; font-size: 0.95rem; }
+    }
+  }
+}
+
+/* CONTENIDO PRINCIPAL (Layout 2 columnas) */
+.main-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden; // Previene scroll global
+}
+
+/* BARRA LATERAL (Izquierda) */
+.sidebar-results {
+  width: 500px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid $border-color;
+  background: #ffffff;
+
+  .sidebar-header {
+    padding: 24px;
+    border-bottom: 1px solid #f3f4f6;
+
+    h2 { font-size: 1.5rem; font-weight: 800; color: $navy-blue; margin: 0 0 15px 0; }
+    
+    .results-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.9rem; color: $text-gray;
+      
+      .sort-dropdown {
+        cursor: pointer; display: flex; align-items: center; gap: 5px;
+        .fw-bold { font-weight: 600; color: $navy-blue; }
+      }
+    }
+  }
+
+  // Zona con scroll para las tarjetas
+  .parking-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .load-more-btn {
+    width: 100%; display: flex; align-items: center; justify-content: center;
+    gap: 10px; padding: 15px; background: white; border: 1px solid $border-color;
+    border-radius: 12px; color: $navy-blue; font-weight: 600; cursor: pointer;
+    margin-top: 10px; transition: background 0.2s;
+    &:hover { background: #f8fafc; }
+  }
+}
+
+/* TARJETAS DE ESTACIONAMIENTO */
+.parking-card {
+  display: flex;
+  border: 1px solid $border-color;
+  border-radius: 16px;
+  overflow: hidden;
+  height: 160px;
+  background: white;
+
+  .card-image {
+    width: 160px;
+    flex-shrink: 0;
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  .card-details {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      
+      .badge {
+        font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 20px;
+        &.privado { background: #e6f6f4; color: $green-accent; }
+        &.residencial { background: #eef2ff; color: #4f46e5; }
+        &.convenio { background: #f3e8ff; color: #9333ea; }
+      }
+      
+      ion-icon { font-size: 1.4rem; cursor: pointer; }
+    }
+
+    .title { font-size: 1rem; font-weight: 700; color: $navy-blue; margin: 5px 0; }
+    
+    .rating {
+      font-size: 0.85rem; font-weight: 600; color: $navy-blue; margin-bottom: 5px;
+      .star { color: #fbbf24; font-size: 1rem; }
+      .reviews { color: $text-gray; font-weight: normal; }
+    }
+
+    .location {
+      font-size: 0.85rem; color: $text-gray; display: flex; align-items: center; gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .footer-info {
+      display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f3f4f6; padding-top: 8px;
+      .walking { font-size: 0.8rem; color: $text-gray; display: flex; align-items: center; gap: 4px; }
+      .price {
+        font-size: 0.8rem; color: $text-gray;
+        strong { font-size: 1.1rem; color: $green-accent; }
+      }
+    }
+  }
+}
+
+/* ZONA DEL MAPA (Derecha) */
+.map-container {
+  flex: 1;
+  position: relative;
+  background: #e5e5e5; // Fondo mientras carga el mapa
+
+  .map-info-overlay {
+    position: absolute; top: 20px; left: 20px; z-index: 5;
+    background: white; border-radius: 12px; padding: 15px;
+    display: flex; gap: 12px; align-items: flex-start; max-width: 250px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    
+    ion-icon { font-size: 1.5rem; color: $navy-blue; flex-shrink: 0; }
+    p { margin: 0; font-size: 0.85rem; color: $text-gray; line-height: 1.4; }
+  }
+
+  .map-legend {
+    position: absolute; bottom: 30px; right: 30px; z-index: 5;
+    background: white; border-radius: 12px; padding: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex; flex-direction: column; gap: 10px;
+
+    .legend-item {
+      display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: $text-gray;
+      .line { width: 30px; height: 3px; border-radius: 2px; }
+      .green { background: $green-accent; }
+      .orange { background: #f59e0b; }
+      .red { background: #ef4444; }
+    }
+  }
 }

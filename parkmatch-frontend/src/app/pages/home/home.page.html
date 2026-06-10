@@ -1,45 +1,125 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar color="light">
-    <ion-title>ParkMatch</ion-title>
-    <ion-buttons slot="end">
-      <ion-button routerLink="/profile"><ion-icon name="person-circle-outline"></ion-icon></ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<ion-content [scrollY]="false" class="search-layout">
+  
+  <header class="top-navbar">
+    <div class="brand">
+      <img src="assets/icon/logo-parkmatch.jpeg" alt="ParkMatch" />
+    </div>
 
-<ion-content class="full-height">
-  <ion-grid class="h-100 p-0">
-    <ion-row class="h-100">
-      
-      <ion-col size="4" class="list-col">
-        <div class="search-header">
-          <h3>Mapa / Búsqueda</h3>
-          <p>{{ estacionamientos.length }} resultados encontrados</p>
+    <div class="search-controls">
+      <div class="control-group input-box">
+        <ion-icon name="location-outline"></ion-icon>
+        <input type="text" value="Valparaíso, Chile" readonly />
+        <ion-icon name="close-outline" class="clear-btn"></ion-icon>
+      </div>
+
+      <div class="control-group select-box">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <div class="select-text"><span>Hoy, 12 jun</span><br><small>8:00</small></div>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+
+      <div class="control-group select-box">
+        <ion-icon name="time-outline"></ion-icon>
+        <div class="select-text"><span>Hoy, 12 jun</span><br><small>12:00</small></div>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+
+      <button class="filter-btn">
+        <ion-icon name="filter-outline"></ion-icon> Filtros
+      </button>
+    </div>
+
+    <div class="user-actions">
+      <div class="notifications">
+        <ion-icon name="notifications-outline"></ion-icon>
+        <span class="badge">3</span>
+      </div>
+      <div class="profile-menu">
+        <img src="assets/icon/default-profile.png" alt="User" />
+        <span>Hola, María</span>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    
+    <aside class="sidebar-results">
+      <div class="sidebar-header">
+        <h2>Mapa / Búsqueda</h2>
+        <div class="results-meta">
+          <span>{{ estacionamientos.length }} resultados encontrados</span>
+          <div class="sort-dropdown">
+            Ordenar por <span class="fw-bold">Recomendados</span> <ion-icon name="chevron-down-outline"></ion-icon>
+          </div>
+        </div>
+      </div>
+
+      <div class="parking-list">
+        <div class="parking-card" *ngFor="let p of estacionamientos" (click)="iniciarReserva(p)" style="cursor: pointer;">
+          
+          <div class="card-image">
+            <img [src]="p.imagen" [alt]="p.nombre" onerror="this.src='assets/icon/fondo-landing.png'" />
+          </div>
+          
+          <div class="card-details">
+            <div class="card-header">
+              <span class="badge" [ngClass]="p.tipo?.toLowerCase() || ''">{{ p.tipo }}</span>
+              <ion-icon 
+                [name]="p.isFavorite ? 'heart' : 'heart-outline'" 
+                [color]="p.isFavorite ? 'danger' : 'medium'"
+                (click)="toggleFavorite(p); $event.stopPropagation()">
+              </ion-icon>
+            </div>
+            
+            <h3 class="title">{{ p.nombre }}</h3>
+            
+            <div class="rating">
+              <span class="star">★</span> {{ p.rating }} <span class="reviews">({{ p.reviews }})</span>
+            </div>
+            
+            <div class="location">
+              <ion-icon name="location-outline"></ion-icon> {{ p.direccion }}
+            </div>
+            
+            <div class="footer-info">
+              <div class="walking">
+                <ion-icon name="walk-outline"></ion-icon> {{ p.tiempo }} ({{ p.distancia }})
+              </div>
+              <div class="price">
+                <strong>${{ p.precio_hora | number:'1.0-0' }}</strong> CLP / hora
+              </div>
+            </div>
+          </div>
         </div>
 
-        <ion-list>
-          <ion-card *ngFor="let est of estacionamientos" class="parking-card" (click)="iniciarReserva(est)">
-            <img src="assets/images/parking-placeholder.jpg" />
-            <ion-card-header>
-              <ion-card-title>{{ est.direccion }}</ion-card-title>
-              <p><ion-icon name="location-outline"></ion-icon> Valparaíso, Chile</p>
-            </ion-card-header>
-            <ion-card-content>
-              <div class="price-row">
-                <span class="price">${{ est.precio_hora }} CLP / hora</span>
-                <ion-button size="small" color="success">Reservar</ion-button>
-              </div>
-            </ion-card-content>
-          </ion-card>
-        </ion-list>
-      </ion-col>
+        <button class="load-more-btn">
+          <ion-icon name="map-outline"></ion-icon> Mostrar más resultados
+        </button>
+      </div>
+    </aside>
 
-      <ion-col size="8" class="map-col">
-        <google-map height="100%" width="100%" [center]="center" [zoom]="zoom">
-          <map-marker *ngFor="let m of marcadores" [position]="m.position"></map-marker>
-        </google-map>
-      </ion-col>
+    <section class="map-container">
+      <div class="map-info-overlay">
+        <ion-icon name="information-circle"></ion-icon>
+        <p>Explora espacios de estacionamiento cerca de ti. Reserva fácil y seguro.</p>
+      </div>
 
-    </ion-row>
-  </ion-grid>
+      <div class="map-legend">
+        <div class="legend-item"><span class="line green"></span> Disponibilidad alta</div>
+        <div class="legend-item"><span class="line orange"></span> Disponibilidad media</div>
+        <div class="legend-item"><span class="line red"></span> Disponibilidad baja</div>
+      </div>
+
+      <google-map height="100%" width="100%" [center]="center" [zoom]="zoom" [options]="mapOptions">
+        <map-marker 
+          *ngFor="let m of marcadores" 
+          [position]="m.position" 
+          [options]="m.options"
+          [title]="m.title">
+        </map-marker>
+      </google-map>
+    </section>
+
+  </main>
 </ion-content>
