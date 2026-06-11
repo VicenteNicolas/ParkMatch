@@ -5,25 +5,30 @@
       <img src="assets/icon/logo-parkmatch.jpeg" alt="ParkMatch" />
     </div>
 
-    <div class="search-controls">
-      <div class="control-group input-box">
+    <div class="unified-search-bar desktop-only">
+      <div class="search-section location-section">
         <ion-icon name="location-outline"></ion-icon>
         <input type="text" value="Valparaíso, Chile" readonly />
         <ion-icon name="close-outline" class="clear-btn"></ion-icon>
       </div>
-
-      <div class="control-group select-box">
+      <div class="vertical-divider"></div>
+      <div class="search-section date-section">
         <ion-icon name="calendar-outline"></ion-icon>
-        <div class="select-text"><span>Hoy, 12 jun</span><br><small>8:00</small></div>
-        <ion-icon name="chevron-down-outline"></ion-icon>
+        <div class="date-text">
+          <span>Hoy, 12 jun</span>
+          <input type="time" [(ngModel)]="horaInicio" (ngModelChange)="aplicarFiltroHorario()" />
+        </div>
+        <ion-icon name="chevron-down-outline" class="dropdown-icon"></ion-icon>
       </div>
-
-      <div class="control-group select-box">
+      <div class="vertical-divider"></div>
+      <div class="search-section date-section">
         <ion-icon name="time-outline"></ion-icon>
-        <div class="select-text"><span>Hoy, 12 jun</span><br><small>12:00</small></div>
-        <ion-icon name="chevron-down-outline"></ion-icon>
+        <div class="date-text">
+          <span>Hoy, 12 jun</span>
+          <input type="time" [(ngModel)]="horaTermino" (ngModelChange)="aplicarFiltroHorario()" />
+        </div>
+        <ion-icon name="chevron-down-outline" class="dropdown-icon"></ion-icon>
       </div>
-
       <button class="filter-btn">
         <ion-icon name="filter-outline"></ion-icon> Filtros
       </button>
@@ -34,10 +39,10 @@
         <ion-icon name="notifications-outline"></ion-icon>
         <span class="badge">3</span>
       </div>
-      <div class="profile-menu">
+      <div class="profile-menu" routerLink="/profile">
         <img src="assets/icon/default-profile.png" alt="User" />
-        <span>Hola, María</span>
-        <ion-icon name="chevron-down-outline"></ion-icon>
+        <span>Hola, {{ usuarioNombre }}</span>
+        <ion-icon name="chevron-down-outline" class="dropdown-icon"></ion-icon>
       </div>
     </div>
   </header>
@@ -57,43 +62,38 @@
 
       <div class="parking-list">
         <div class="parking-card" *ngFor="let p of estacionamientos" (click)="iniciarReserva(p)" style="cursor: pointer;">
-          
           <div class="card-image">
             <img [src]="p.imagen" [alt]="p.nombre" onerror="this.src='assets/icon/fondo-landing.png'" />
           </div>
-          
           <div class="card-details">
             <div class="card-header">
               <span class="badge" [ngClass]="p.tipo?.toLowerCase() || ''">{{ p.tipo }}</span>
+              
               <ion-icon 
                 [name]="p.isFavorite ? 'heart' : 'heart-outline'" 
-                [color]="p.isFavorite ? 'danger' : 'medium'"
-                (click)="toggleFavorite(p); $event.stopPropagation()">
+                [ngStyle]="{'color': p.isFavorite ? '#ef4444' : '#9ca3af'}"
+                class="favorite-btn"
+                (click)="toggleFavorite(p, $event)">
               </ion-icon>
+
             </div>
-            
             <h3 class="title">{{ p.nombre }}</h3>
-            
-            <div class="rating">
-              <span class="star">★</span> {{ p.rating }} <span class="reviews">({{ p.reviews }})</span>
-            </div>
-            
-            <div class="location">
-              <ion-icon name="location-outline"></ion-icon> {{ p.direccion }}
-            </div>
+            <div class="rating"><span class="star">★</span> {{ p.rating | number:'1.1-1' }} <span class="reviews">({{ p.reviews }})</span></div>
+            <div class="location"><ion-icon name="location-outline"></ion-icon> {{ p.direccion }}</div>
             
             <div class="footer-info">
-              <div class="walking">
-                <ion-icon name="walk-outline"></ion-icon> {{ p.tiempo }} ({{ p.distancia }})
-              </div>
-              <div class="price">
-                <strong>${{ p.precio_hora | number:'1.0-0' }}</strong> CLP / hora
-              </div>
+              <div class="walking"><ion-icon name="walk-outline"></ion-icon> {{ p.tiempo }} <span class="dist">({{ p.distancia }})</span></div>
+              <div class="price"><strong>${{ p.precio_hora | number:'1.0-0' }}</strong> CLP <span class="per-hour">/ hora</span></div>
             </div>
           </div>
         </div>
 
-        <button class="load-more-btn">
+        <div class="empty-state" *ngIf="estacionamientos.length === 0" style="text-align: center; padding: 40px; color: #6b7280;">
+          <ion-icon name="time-outline" style="font-size: 3rem; margin-bottom: 10px;"></ion-icon>
+          <p>No hay disponibilidad para el bloque horario seleccionado.</p>
+        </div>
+
+        <button class="load-more-btn" *ngIf="estacionamientos.length > 0">
           <ion-icon name="map-outline"></ion-icon> Mostrar más resultados
         </button>
       </div>
@@ -104,20 +104,13 @@
         <ion-icon name="information-circle"></ion-icon>
         <p>Explora espacios de estacionamiento cerca de ti. Reserva fácil y seguro.</p>
       </div>
-
       <div class="map-legend">
         <div class="legend-item"><span class="line green"></span> Disponibilidad alta</div>
         <div class="legend-item"><span class="line orange"></span> Disponibilidad media</div>
         <div class="legend-item"><span class="line red"></span> Disponibilidad baja</div>
       </div>
-
       <google-map height="100%" width="100%" [center]="center" [zoom]="zoom" [options]="mapOptions">
-        <map-marker 
-          *ngFor="let m of marcadores" 
-          [position]="m.position" 
-          [options]="m.options"
-          [title]="m.title">
-        </map-marker>
+        <map-marker *ngFor="let m of marcadores" [position]="m.position" [options]="m.options" [title]="m.title"></map-marker>
       </google-map>
     </section>
 

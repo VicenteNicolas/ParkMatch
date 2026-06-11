@@ -24,13 +24,7 @@ interface EstacionamientoDetalle {
   templateUrl: './booking.page.html',
   styleUrls: ['./booking.page.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    IonicModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    RouterModule 
-  ]
+  imports: [CommonModule, IonicModule, ReactiveFormsModule, HttpClientModule, RouterModule]
 })
 export class BookingPage implements OnInit {
   reservaForm!: FormGroup;
@@ -52,19 +46,14 @@ export class BookingPage implements OnInit {
     private http: HttpClient
   ) {
     addIcons({
-      'arrow-back-outline': arrowBackOutline, 'location-outline': locationOutline,
-      'calendar-outline': calendarOutline, 'time-outline': timeOutline,
-      'lock-closed-outline': lockClosedOutline, 'star': star,
-      'information-circle-outline': informationCircleOutline, 'chevron-down-outline': chevronDownOutline,
-      'close-outline': closeOutline, 'filter-outline': filterOutline,
-      'notifications-outline': notificationsOutline, 'walk-outline': walkOutline,
-      'pricetag-outline': pricetagOutline, 'wallet-outline': walletOutline,
-      'shield-checkmark-outline': shieldCheckmarkOutline 
+      arrowBackOutline, locationOutline, calendarOutline, timeOutline,
+      lockClosedOutline, star, informationCircleOutline, chevronDownOutline,
+      closeOutline, filterOutline, notificationsOutline, walkOutline,
+      pricetagOutline, walletOutline, shieldCheckmarkOutline 
     });
   }
 
   ngOnInit() {
-    // Iniciamos el formulario con un valor base
     this.reservaForm = this.fb.group({
       fecha:       [this.fechaMinima, Validators.required], 
       horaInicio:  ['10:00', Validators.required],
@@ -80,7 +69,7 @@ export class BookingPage implements OnInit {
       if (params['duracion']) {
         const horasExtra = Number(params['duracion']);
         const hFin = 10 + Math.floor(horasExtra);
-        const mFin = (horasExtra % 1) * 60; // Extrae los minutos si viene con decimales
+        const mFin = (horasExtra % 1) * 60;
         const horaStr = `${hFin.toString().padStart(2, '0')}:${mFin === 0 ? '00' : '30'}`;
         
         this.reservaForm.patchValue({ horaTermino: horaStr });
@@ -99,10 +88,10 @@ export class BookingPage implements OnInit {
             const e = res.data.find(x => x.id === id);
             if (e) {
               this.estacionamiento = {
-                nombre:     'Garage Privado Cerro Alegre',
+                nombre:     e.descripcion || 'Estacionamiento Disponible',
                 direccion:  e.direccion,
                 precio_hora: e.precio_hora,
-                imagen:     'assets/images/garage1.jpg'
+                imagen:     'assets/icon/fondo-landing.png'
               };
               this.calcularResumen();
             }
@@ -132,7 +121,6 @@ export class BookingPage implements OnInit {
     }
     this.horaMinimaTermino = `${minHoraTerminoH.toString().padStart(2, '0')}:${minHoraTerminoM.toString().padStart(2, '0')}`;
 
-    // Diferencia bruta en horas
     let diferencia = (hOut + mOut / 60) - (hIn + mIn / 60);
 
     if (diferencia <= 0) {
@@ -167,7 +155,10 @@ export class BookingPage implements OnInit {
       this.router.navigate(['/payments/checkout'], {
         queryParams: {
           id_estacionamiento: this.estacionamientoId,
-          total: this.totalPagar
+          total: this.totalPagar,
+          fecha: this.reservaForm.get('fecha')?.value,
+          inicio: this.reservaForm.get('horaInicio')?.value,
+          termino: this.reservaForm.get('horaTermino')?.value
         }
       });
     }

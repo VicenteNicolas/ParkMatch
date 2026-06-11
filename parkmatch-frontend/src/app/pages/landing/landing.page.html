@@ -1,139 +1,156 @@
 <ion-content class="landing-bg">
-    <div class="landing-container">
 
-        <header class="navbar">
-            <div class="brand">
-                <img src="assets/icon/logo-parkmatch.jpeg" alt="ParkMatch" />
+  <!-- ── Navbar dentro del contenedor ──────────────────────────────── -->
+  <div class="landing-container">
+    <header class="navbar">
+      <div class="brand">
+        <img src="assets/icon/logo-parkmatch.jpeg" alt="ParkMatch" />
+        <div class="brand-text">
+          <span class="brand-name">ParkMatch</span>
+          <span class="brand-tagline">FIND. BOOK. PARK. EASY.</span>
+        </div>
+      </div>
+
+      <nav class="nav-links desktop-only">
+        <a href="#" class="active">Inicio</a>
+        <a href="#">¿Cómo funciona?</a>
+        <a href="#">Sobre nosotros</a>
+      </nav>
+
+      <div class="auth-actions">
+
+        <ng-container *ngIf="!isLoggedIn; else profileView">
+          <ion-button fill="clear" routerLink="/login" class="login-btn">
+            Iniciar sesión
+          </ion-button>
+          <span class="auth-separator">|</span>
+          <ion-button routerLink="/register" class="register-btn">
+            Regístrate
+          </ion-button>
+        </ng-container>
+
+        <ng-template #profileView>
+          <ion-button fill="clear" id="profile-popover-trigger" class="user-profile-btn">
+            <div class="user-profile">
+              <span class="user-name">{{ userName }}</span>
+              <ion-avatar>
+                <img [src]="userProfilePic" alt="Perfil" />
+              </ion-avatar>
             </div>
+          </ion-button>
 
-            <nav class="nav-links desktop-only">
-                <a href="#" class="active">Inicio</a>
-                <a href="#">¿Cómo funciona?</a>
-                <a href="#">Sobre nosotros</a>
-            </nav>
-
-            <div class="auth-actions">
-
-                <ng-container *ngIf="!isLoggedIn; else profileView">
-                    <ion-button fill="clear" color="dark" routerLink="/login" class="login-btn">
-                        Iniciar sesión
-                    </ion-button>
-                    <ion-button color="success" routerLink="/register" class="register-btn">
-                        Regístrate
-                    </ion-button>
-                </ng-container>
-
-                <ng-template #profileView>
-                    <ion-button fill="clear" color="dark" id="profile-popover-trigger" class="user-profile-btn">
-                        <div class="user-profile">
-                            <span class="user-name">{{ userName }}</span>
-                            <ion-avatar>
-                                <img [src]="userProfilePic" alt="Perfil" />
-                            </ion-avatar>
-                        </div>
-                    </ion-button>
-
-                    <ion-popover trigger="profile-popover-trigger" side="bottom" alignment="end">
-                        <ng-template>
-                            <ion-content>
-                                <ion-list>
-                                    <ion-item button routerLink="/profile" lines="full">
-                                        <ion-icon slot="start" name="person-circle-outline"></ion-icon>
-                                        <ion-label>Mi Perfil</ion-label>
-                                    </ion-item>
-                                    <ion-item button (click)="logout()" lines="none" color="danger">
-                                        <ion-icon slot="start" name="log-out-outline"></ion-icon>
-                                        <ion-label>Cerrar Sesión</ion-label>
-                                    </ion-item>
-                                </ion-list>
-                            </ion-content>
-                        </ng-template>
-                    </ion-popover>
-                </ng-template>
-
-            </div>
-        </header>
-
-        <main class="hero-section">
-            <div class="hero-content">
-                <h1>Encuentra<br><span class="highlight">estacionamiento</span><br>fácilmente en Valparaíso</h1>
-                <p>Busca, reserva y estaciona en minutos. Disfruta Valparaíso sin dar vueltas buscando dónde estacionar.
-                </p>
-
-                <div class="search-box">
-                    <ion-icon name="location-outline"></ion-icon>
-                    <input type="text" placeholder="¿Dónde quieres estacionar en Valparaíso?" readonly
-                        (click)="buscarEstacionamiento()" />
-                    <ion-button color="dark" class="search-btn" (click)="buscarEstacionamiento()">
-                        <ion-icon name="search-outline" slot="start"></ion-icon>
-                        Buscar
-                    </ion-button>
+          <ion-popover trigger="profile-popover-trigger" side="bottom" alignment="end" class="profile-popover">
+            <ng-template>
+              <ion-content class="popover-content">
+                
+                <div class="menu-options">
+                  <button class="menu-item" routerLink="/profile">
+                    <ion-icon name="person-circle-outline"></ion-icon>
+                    Mi Perfil
+                  </button>
+                  
+                  <div class="menu-divider"></div>
+                  
+                  <button class="menu-item logout" (click)="logout()">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                    Cerrar Sesión
+                  </button>
                 </div>
-            </div>
 
-            <div class="hero-image desktop-only">
-                <img src="assets/icon/fondo-landing.png" alt="Mapa de Valparaíso" />
-            </div>
-        </main>
+              </ion-content>
+            </ng-template>
+          </ion-popover>
+        </ng-template>
 
-        <section class="features-grid">
-            <div class="feature-card">
-                <div class="icon-wrapper color-green">
-                    <ion-icon name="location-outline"></ion-icon>
-                </div>
-                <div class="feature-text">
-                    <h3>En Valparaíso</h3>
-                    <p>Opciones de estacionamiento en cerros, plan y borde costero.</p>
-                </div>
-            </div>
+      </div>
+    </header>
+  </div>
 
-            <div class="feature-card">
-                <div class="icon-wrapper color-blue">
-                    <ion-icon name="calendar-outline"></ion-icon>
-                </div>
-                <div class="feature-text">
-                    <h3>Reserva en minutos</h3>
-                    <p>Asegura tu espacio y evita dar vueltas.</p>
-                </div>
-            </div>
+  <section class="hero-section">
+    <!-- Contenido izquierdo alineado con el contenedor -->
+    <div class="hero-content">
+      <h1>Encuentra<br><span class="highlight">estacionamiento</span><br>fácilmente en Valparaíso</h1>
+      <p>Busca, reserva y estaciona en minutos. Disfruta Valparaíso sin dar vueltas buscando dónde estacionar.</p>
 
-            <div class="feature-card">
-                <div class="icon-wrapper color-green">
-                    <ion-icon name="shield-checkmark-outline"></ion-icon>
-                </div>
-                <div class="feature-text">
-                    <h3>Estaciona tranquilo</h3>
-                    <p>Espacios verificados y seguros cerca de ti.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="popular-zones">
-            <h4>Encuentra estacionamientos cerca de los lugares que más visitas en Valparaíso</h4>
-
-            <div class="zones-list">
-                <div class="zone-item">
-                    <ion-icon name="business-outline"></ion-icon>
-                    <span>Cerro Alegre<br>y Cerro Concepción</span>
-                </div>
-                <div class="zone-item">
-                    <ion-icon name="water-outline"></ion-icon>
-                    <span>Borde Costero<br>y Playa Ancha</span>
-                </div>
-                <div class="zone-item">
-                    <ion-icon name="ticket-outline"></ion-icon>
-                    <span>Teatros<br>y Cultura</span>
-                </div>
-                <div class="zone-item">
-                    <ion-icon name="bag-handle-outline"></ion-icon>
-                    <span>Tiendas y<br>Comercio</span>
-                </div>
-                <div class="zone-item">
-                    <ion-icon name="school-outline"></ion-icon>
-                    <span>Universidades<br>y Servicios</span>
-                </div>
-            </div>
-        </section>
-
+      <div class="search-box">
+        <ion-icon name="location-outline"></ion-icon>
+        <input type="text" placeholder="¿Dónde quieres estacionar en Valparaíso?" readonly
+               (click)="buscarEstacionamiento()" />
+        <button class="search-btn" (click)="buscarEstacionamiento()">
+          <ion-icon name="search-outline"></ion-icon>
+          Buscar
+        </button>
+      </div>
     </div>
+
+    <!-- Imagen derecha que llega al borde -->
+    <div class="hero-image">
+      <img src="assets/icon/fondo-landing.png" alt="Mapa de Valparaíso" />
+    </div>
+  </section>
+
+  <!-- ── Secciones inferiores dentro del contenedor ─────────────────── -->
+  <div class="landing-container">
+
+    <section class="features-grid">
+      <div class="feature-card">
+        <div class="icon-wrapper color-green">
+          <ion-icon name="location-outline"></ion-icon>
+        </div>
+        <div class="feature-text">
+          <h3>En Valparaíso</h3>
+          <p>Opciones de estacionamiento en cerros, plan y borde costero.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon-wrapper color-blue">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+        <div class="feature-text">
+          <h3>Reserva en minutos</h3>
+          <p>Asegura tu espacio y evita dar vueltas.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon-wrapper color-green">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+        </div>
+        <div class="feature-text">
+          <h3>Estaciona tranquilo</h3>
+          <p>Espacios verificados y seguros cerca de ti.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="popular-zones">
+      <h4>Encuentra estacionamientos cerca de los lugares que más visitas en Valparaíso</h4>
+
+      <div class="zones-list">
+        <div class="zone-item">
+          <div class="zone-icon"><ion-icon name="business-outline"></ion-icon></div>
+          <span>Cerro Alegre<br>y Cerro Concepción</span>
+        </div>
+        <div class="zone-item">
+          <div class="zone-icon"><ion-icon name="water-outline"></ion-icon></div>
+          <span>Borde Costero<br>y Playa Ancha</span>
+        </div>
+        <div class="zone-item">
+          <div class="zone-icon"><ion-icon name="ticket-outline"></ion-icon></div>
+          <span>Teatros<br>y Cultura</span>
+        </div>
+        <div class="zone-item">
+          <div class="zone-icon"><ion-icon name="bag-handle-outline"></ion-icon></div>
+          <span>Tiendas y<br>Comercio</span>
+        </div>
+        <div class="zone-item">
+          <div class="zone-icon"><ion-icon name="school-outline"></ion-icon></div>
+          <span>Universidades<br>y Servicios</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
 </ion-content>
