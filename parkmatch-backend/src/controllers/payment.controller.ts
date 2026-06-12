@@ -12,7 +12,6 @@ export const processPayment = async (req: AuthRequest, res: Response): Promise<v
     try {
         await connection.beginTransaction();
 
-        // Validar que la reserva existe, pertenece al usuario y está Pendiente
         const [reservas] = await connection.query<RowDataPacket[]>(
             `SELECT monto_total FROM Reserva WHERE id = ? AND id_conductor = ? AND estado = 'Pendiente'`,
             [id_reserva, id_conductor]
@@ -31,15 +30,14 @@ export const processPayment = async (req: AuthRequest, res: Response): Promise<v
             [id_reserva, metodo_pago, monto]
         );
 
-        // Confirmar la reserva (RF-06)
         await connection.query<ResultSetHeader>(
-            `UPDATE Reserva SET estado = 'Confirmada' WHERE id = ?`,
+            `UPDATE Reserva SET estado = 'Pendiente' WHERE id = ?`,
             [id_reserva]
         );
 
         await connection.commit();
 
-        res.status(200).json({ ok: true, message: 'Pago procesado exitosamente. Reserva confirmada.' });
+        res.status(200).json({ ok: true, message: 'Pago procesado. Esperando aprobación del propietario.' });
 
     } catch (error) {
         await connection.rollback();
