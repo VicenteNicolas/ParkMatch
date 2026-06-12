@@ -13,6 +13,8 @@ export interface Perfil {
 }
 
 export interface Reserva {
+  conductor_nombre?: string;
+  conductor_telefono?: string;
   id_reserva: number;
   descripcion: string;
   direccion: string;

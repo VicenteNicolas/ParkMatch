@@ -186,6 +186,24 @@ export class ProfilePage implements OnInit {
     });
   }
 
+  responderReservaOwner(reserva: Reserva, estado: 'Confirmada' | 'Cancelada'): void {
+    this.profileService.responderReserva(reserva.id_reserva, estado).subscribe({
+      next: (res) => {
+        if (res.ok) {
+          reserva.estado = estado;
+          if (estado === 'Cancelada') {
+            // Mover al historial dinámicamente si se rechaza
+            this.reservasActivas = this.reservasActivas.filter(r => r.id_reserva !== reserva.id_reserva);
+            this.reservasHistorial.unshift(reserva);
+          }
+        }
+      },
+      error: () => {
+        alert(`Ocurrió un error al intentar marcar la reserva como ${estado}`);
+      }
+    });
+  }
+
   // --- PAGOS Y PERFIL ---
   cargarPagos(): void {
     this.profileService.getPayments().subscribe(res => {

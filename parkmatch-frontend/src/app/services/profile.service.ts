@@ -39,4 +39,10 @@ export class ProfileService {
       `${environment.apiUrl}/reservations/${idReserva}/cancel`, {}, { headers: this.getHeaders() }
     );
   }
+
+  responderReserva(idReserva: number, estado: 'Confirmada' | 'Cancelada'): Observable<{ok: boolean, message: string}> {
+    return this.http.put<{ok: boolean, message: string}>(
+      `${environment.apiUrl}/profile/reservations/${idReserva}/respond`, { estado }, { headers: this.getHeaders() }
+    );
+  }
 }

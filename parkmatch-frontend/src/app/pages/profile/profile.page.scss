@@ -1035,6 +1035,26 @@ $bg-main: #f8fafc;
   }
 }
 
+/* --- Insignia Pendiente y Caja de Conductor --- */
+.status-badge.pendiente {
+  color: #d97706 !important;
+  border-color: #fcd34d !important;
+  background: #fffbeb !important;
+}
+
+.conductor-box {
+  background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px;
+  padding: 10px 15px; margin-bottom: 15px;
+  p { margin: 0 0 5px 0; font-size: 0.85rem; color: #374151; display: flex; align-items: center; gap: 8px; }
+  p:last-child { margin: 0; }
+  ion-icon { color: #0b2447; font-size: 1.1rem; }
+}
+
+.action-buttons .btn-outline.cancel {
+  border-color: #ef4444; color: #ef4444;
+  &:hover { background: #fef2f2; }
+}
+
 @media (max-width: 1200px) {
   .dashboard-container {
     grid-template-columns: 240px 1fr;
