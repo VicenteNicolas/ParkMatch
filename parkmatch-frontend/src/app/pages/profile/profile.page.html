@@ -11,7 +11,7 @@
     </div>
     <div class="user-actions" *ngIf="perfil">
       <div class="notifications"><ion-icon name="notifications-outline"></ion-icon><span class="badge">3</span></div>
-      <div class="profile-menu"><img src="assets/icon/default-profile.png" alt="User" /><span class="desktop-only">Hola, {{ perfil.nombre.split(' ')[0] }}</span></div>
+      <div class="profile-menu"><img src="assets/icon/default-profile.png" alt="User" /><span class="desktop-only">Hola, {{ primerNombre }}</span></div>
     </div>
   </header>
 
@@ -52,8 +52,8 @@
         </div>
 
         <div class="reservations-list">
-          <div class="res-card" *ngFor="let res of (reservaTab === 'proximas' ? reservasActivas : reservasHistorial)">
-            <div class="card-img"><img src="assets/icon/fondo-landing.png"></div>
+          <div class="res-card" *ngFor="let res of (reservaTab === 'proximas' ? reservasActivas : reservasHistorial); trackBy: trackByReservaId">
+            <div class="card-img"><img src="assets/icon/fondo-landing.png" alt="Estacionamiento"></div>
             
             <div class="card-body">
               <div class="top-row">
@@ -89,7 +89,7 @@
       <ng-container *ngIf="currentView === 'pagos'">
         <h1 class="page-title">Historial de Pagos</h1>
         <div class="reservations-list">
-          <div class="res-card" *ngFor="let pago of pagos" style="align-items: center;">
+          <div class="res-card" *ngFor="let pago of pagos; trackBy: trackByPagoId" style="align-items: center;">
             <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
               <div>
                 <h3 class="res-title">{{ pago.descripcion }}</h3>
@@ -108,7 +108,7 @@
 
     <aside class="sidebar-right">
       <div class="user-profile-card">
-        <div class="avatar-container"><img src="assets/icon/default-profile.png"></div>
+        <div class="avatar-container"><img src="assets/icon/default-profile.png" alt="Perfil del Usuario"></div>
         <h2>{{ perfil.nombre }}</h2><p class="email">{{ perfil.email }}</p>
         <div class="user-info-list">
           <div class="info-row"><ion-icon name="card-outline"></ion-icon><div><span>RUT</span><strong>{{ perfil.rut }}</strong></div></div>
@@ -121,7 +121,7 @@
 
   <div class="custom-modal-overlay" *ngIf="isEditing">
     <div class="custom-modal">
-      <div class="modal-header"><h2>Editar mi perfil</h2><button class="btn-close" (click)="closeEditModal()"><ion-icon name="close-outline"></ion-icon></button></div>
+      <div class="modal-header"><h2>Editar mi perfil</h2><button class="btn-close" aria-label="Cerrar edición" (click)="closeEditModal()"><ion-icon name="close-outline"></ion-icon></button></div>
       <form [formGroup]="editForm" (ngSubmit)="guardarPerfil()">
         <div class="form-group"><label>Nombre</label><input type="text" formControlName="nombre" class="form-control" /></div>
         <div class="form-group"><label>Correo</label><input type="email" formControlName="email" class="form-control" /></div>
@@ -137,11 +137,10 @@
     <div class="custom-modal details-modal">
       <div class="modal-header">
         <h2>Detalles de la Reserva</h2>
-        <button class="btn-close" (click)="closeDetailsModal()"><ion-icon name="close-outline"></ion-icon></button>
+        <button class="btn-close" aria-label="Cerrar detalles" (click)="closeDetailsModal()"><ion-icon name="close-outline"></ion-icon></button>
       </div>
       
       <div class="details-content" *ngIf="selectedReserva">
-        
         <div class="status-banner" [ngClass]="{'cancelled': selectedReserva.estado === 'Cancelada'}">
           <ion-icon [name]="selectedReserva.estado === 'Cancelada' ? 'warning-outline' : 'checkmark-circle-outline'"></ion-icon>
           <strong>Estado: {{ selectedReserva.estado }}</strong>
@@ -151,25 +150,13 @@
         <p class="place-address"><ion-icon name="map-outline"></ion-icon> {{ selectedReserva.direccion }}</p>
 
         <div class="info-grid">
-          <div class="grid-item">
-            <span>Fecha Reservada</span>
-            <strong>{{ selectedReserva.fecha_reserva | date:'fullDate' }}</strong>
-          </div>
-          <div class="grid-item">
-            <span>Horario</span>
-            <strong>{{ selectedReserva.hora_inicio }} hasta {{ selectedReserva.hora_fin }}</strong>
-          </div>
-          <div class="grid-item">
-            <span>Total Pagado</span>
-            <strong>${{ selectedReserva.monto_total | number:'1.0-0' }} CLP</strong>
-          </div>
+          <div class="grid-item"><span>Fecha Reservada</span><strong>{{ selectedReserva.fecha_reserva | date:'fullDate' }}</strong></div>
+          <div class="grid-item"><span>Horario</span><strong>{{ selectedReserva.hora_inicio }} hasta {{ selectedReserva.hora_fin }}</strong></div>
+          <div class="grid-item"><span>Total Pagado</span><strong>${{ selectedReserva.monto_total | number:'1.0-0' }} CLP</strong></div>
         </div>
 
         <div class="cancel-section" *ngIf="reservaTab === 'proximas' && selectedReserva.estado !== 'Cancelada'">
-          
-          <button class="btn-cancel-outline" *ngIf="cancelStep === 0" (click)="iniciarCancelacion()">
-            Cancelar Reserva
-          </button>
+          <button class="btn-cancel-outline" *ngIf="cancelStep === 0" (click)="iniciarCancelacion()">Cancelar Reserva</button>
           
           <div class="confirm-cancel-box" *ngIf="cancelStep === 1">
             <p>¿Estás seguro de que deseas cancelar esta reserva? Esta acción no se puede deshacer.</p>
@@ -181,10 +168,8 @@
               </button>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   </div>
-
 </ion-content>
