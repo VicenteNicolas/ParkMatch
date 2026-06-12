@@ -58,21 +58,12 @@
             <div class="card-body">
               <div class="top-row">
                 <span class="type-badge">Privado</span>
-                <span class="status-badge" [ngClass]="{
-                  'cancelada': res.estado === 'Cancelada',
-                  'finalizada': res.estado === 'Finalizada',
-                  'pendiente': res.estado === 'Pendiente'
-                }">{{ res.estado }}</span>
+                <span class="status-badge" [ngClass]="{'cancelada': res.estado === 'Cancelada', 'finalizada': res.estado === 'Finalizada'}">{{ res.estado }}</span>
               </div>
               
               <h3 class="res-title">{{ res.descripcion }}</h3>
               <p class="res-address"><ion-icon name="location-outline"></ion-icon> {{ res.direccion }}</p>
               
-              <div class="conductor-box" *ngIf="perfil.tipo_usuario === 'Propietario' && res.conductor_nombre">
-                <p><ion-icon name="person-outline"></ion-icon> <strong>Solicitante:</strong> {{ res.conductor_nombre }}</p>
-                <p><ion-icon name="call-outline"></ion-icon> <strong>Tel:</strong> {{ res.conductor_telefono }}</p>
-              </div>
-
               <div class="res-details-grid">
                 <div class="detail-item"><ion-icon name="calendar-outline"></ion-icon><div><strong>{{ res.fecha_reserva | date:'longDate' }}</strong></div></div>
                 <div class="detail-item"><ion-icon name="time-outline"></ion-icon><div><strong>{{ res.hora_inicio }} - {{ res.hora_fin }}</strong></div></div>
@@ -80,22 +71,13 @@
 
               <div class="bottom-row">
                 <div class="price-info"><span>Total a pagar</span><strong>${{ res.monto_total | number:'1.0-0' }} CLP</strong></div>
-                
                 <div class="action-buttons">
-                  <ng-container *ngIf="perfil.tipo_usuario !== 'Propietario'">
-                    <button class="btn-outline" (click)="openDetailsModal(res)">Ver detalles</button>
-                    <button class="btn-solid" *ngIf="res.estado === 'Confirmada'" (click)="abrirRuta(res.direccion)">Cómo llegar</button>
-                  </ng-container>
-
-                  <ng-container *ngIf="perfil.tipo_usuario === 'Propietario'">
-                    <button class="btn-outline cancel" *ngIf="res.estado === 'Pendiente'" (click)="responderReservaOwner(res, 'Cancelada')">Rechazar</button>
-                    <button class="btn-solid" *ngIf="res.estado === 'Pendiente'" (click)="responderReservaOwner(res, 'Confirmada')">Aceptar</button>
-                    <button class="btn-outline" *ngIf="res.estado !== 'Pendiente'" (click)="openDetailsModal(res)">Ver detalles</button>
-                  </ng-container>
+                  <button class="btn-outline" (click)="openDetailsModal(res)">Ver detalles</button>
+                  <button class="btn-solid" (click)="abrirRuta(res.direccion)">Cómo llegar</button>
                 </div>
-
               </div>
             </div>
+          </div>
 
           <div class="empty-state" *ngIf="(reservaTab === 'proximas' ? reservasActivas : reservasHistorial).length === 0">
             <ion-icon name="car-outline"></ion-icon>
