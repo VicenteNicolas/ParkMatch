@@ -7,23 +7,16 @@ export const createReservation = async (req: AuthRequest, res: Response): Promis
     const { id_estacionamiento, fecha_reserva, hora_inicio, hora_fin, monto_total } = req.body;
     const id_conductor = req.user?.id;
 
-    if (!id_conductor) {
-        res.status(401).json({ ok: false, message: 'Usuario no autenticado' });
-        return;
-    }
+    if (!id_conductor) { res.status(401).json({ ok: false, message: 'Usuario no autenticado' }); return; }
 
     const connection = await pool.getConnection();
 
     try {
-        // Iniciar transacción para asegurar la concurrencia (CP-04)
         await connection.beginTransaction();
 
-        // Verificar disponibilidad bloqueando las filas concurrentes
         const [conflictos] = await connection.query<RowDataPacket[]>(
             `SELECT id FROM Reserva 
-             WHERE id_estacionamiento = ? 
-             AND fecha_reserva = ? 
-             AND estado != 'Cancelada'
+             WHERE id_estacionamiento = ? AND fecha_reserva = ? AND estado != 'Cancelada'
              AND (
                  (hora_inicio <= ? AND hora_fin > ?) OR
                  (hora_inicio < ? AND hora_fin >= ?) OR
@@ -34,14 +27,10 @@ export const createReservation = async (req: AuthRequest, res: Response): Promis
 
         if (conflictos.length > 0) {
             await connection.rollback();
-            res.status(409).json({ 
-                ok: false, 
-                message: 'Conflicto de disponibilidad: El espacio ya fue reservado en este bloque horario.' 
-            });
+            res.status(409).json({ ok: false, message: 'Conflicto de disponibilidad.' });
             return;
         }
 
-        // Insertar la reserva (RF-05)
         const [result] = await connection.query<ResultSetHeader>(
             `INSERT INTO Reserva (id_conductor, id_estacionamiento, fecha_reserva, hora_inicio, hora_fin, monto_total, estado) 
              VALUES (?, ?, ?, ?, ?, ?, 'Pendiente')`,
@@ -49,17 +38,11 @@ export const createReservation = async (req: AuthRequest, res: Response): Promis
         );
 
         await connection.commit();
-
-        res.status(201).json({
-            ok: true,
-            message: 'Reserva pre-confirmada. Proceda al pago.',
-            id_reserva: result.insertId
-        });
+        res.status(201).json({ ok: true, message: 'Reserva pre-confirmada.', id_reserva: result.insertId });
 
     } catch (error) {
         await connection.rollback();
-        console.error('Error al crear reserva:', error);
-        res.status(500).json({ ok: false, message: 'Error interno del servidor al procesar la reserva.' });
+        res.status(500).json({ ok: false, message: 'Error interno del servidor.' });
     } finally {
         connection.release();
     }
@@ -102,10 +85,10 @@ export const cancelReservation = async (req: AuthRequest, res: Response): Promis
     const id_conductor = req.user?.id;
 
     try {
-        // RF-07: Cancelación de reserva
+        // FIX: Se incluye 'Confirmada' en la lista de estados que se pueden cancelar
         const [result] = await pool.query<ResultSetHeader>(
             `UPDATE Reserva SET estado = 'Cancelada' 
-             WHERE id = ? AND id_conductor = ? AND estado = 'Pendiente'`,
+             WHERE id = ? AND id_conductor = ? AND estado IN ('Pendiente', 'Confirmada')`,
             [id, id_conductor]
         );
 

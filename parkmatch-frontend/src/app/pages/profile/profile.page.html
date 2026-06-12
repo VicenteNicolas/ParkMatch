@@ -1,80 +1,37 @@
 <ion-content class="profile-bg">
-  
   <header class="top-navbar">
     <div class="brand" routerLink="/home" style="cursor: pointer;">
       <img src="assets/icon/logo-parkmatch.jpeg" alt="ParkMatch" />
     </div>
-
     <div class="search-controls desktop-only">
-      <div class="control-group input-box">
-        <ion-icon name="location-outline"></ion-icon>
-        <input type="text" value="Valparaíso, Chile" readonly />
-        <ion-icon name="close-outline" class="clear-btn"></ion-icon>
-      </div>
-      <div class="control-group select-box">
-        <ion-icon name="calendar-outline"></ion-icon>
-        <div class="select-text"><span>Hoy, 12 jun</span><br><small>8:00</small></div>
-        <ion-icon name="chevron-down-outline"></ion-icon>
-      </div>
-      <div class="control-group select-box">
-        <ion-icon name="time-outline"></ion-icon>
-        <div class="select-text"><span>Hoy, 12 jun</span><br><small>12:00</small></div>
-        <ion-icon name="chevron-down-outline"></ion-icon>
-      </div>
-      <button class="filter-btn">
-        <ion-icon name="filter-outline"></ion-icon> Filtros
-      </button>
+      <div class="control-group input-box"><ion-icon name="location-outline"></ion-icon><input type="text" value="Valparaíso, Chile" readonly /><ion-icon name="close-outline" class="clear-btn"></ion-icon></div>
+      <div class="control-group select-box"><ion-icon name="calendar-outline"></ion-icon><div class="select-text"><span>Hoy, 12 jun</span><br><small>8:00</small></div></div>
+      <div class="control-group select-box"><ion-icon name="time-outline"></ion-icon><div class="select-text"><span>Hoy, 12 jun</span><br><small>12:00</small></div></div>
+      <button class="filter-btn"><ion-icon name="filter-outline"></ion-icon> Filtros</button>
     </div>
-
     <div class="user-actions" *ngIf="perfil">
-      <div class="notifications">
-        <ion-icon name="notifications-outline"></ion-icon>
-        <span class="badge">3</span>
-      </div>
-      <div class="profile-menu">
-        <img src="assets/icon/default-profile.png" alt="User" />
-        <span class="desktop-only">Hola, {{ perfil.nombre.split(' ')[0] }}</span>
-        <ion-icon name="chevron-down-outline"></ion-icon>
-      </div>
+      <div class="notifications"><ion-icon name="notifications-outline"></ion-icon><span class="badge">3</span></div>
+      <div class="profile-menu"><img src="assets/icon/default-profile.png" alt="User" /><span class="desktop-only">Hola, {{ perfil.nombre.split(' ')[0] }}</span></div>
     </div>
   </header>
 
-  <div class="loading-state" *ngIf="isLoading">
-    <ion-spinner name="crescent"></ion-spinner>
-    <p>Cargando tu información...</p>
-  </div>
-
-  <div class="error-state" *ngIf="errorConexion">
-    <ion-icon name="alert-circle-outline"></ion-icon>
-    <h2>Error de conexión</h2>
-    <p>No se pudo conectar con el servidor.</p>
-  </div>
+  <div class="loading-state" *ngIf="isLoading"><ion-spinner></ion-spinner></div>
+  <div class="error-state" *ngIf="errorConexion"><ion-icon name="alert-circle-outline"></ion-icon><h2>Error de conexión</h2></div>
 
   <div class="dashboard-container" *ngIf="!isLoading && perfil">
     
     <aside class="sidebar-left">
       <nav class="side-menu">
-        <a class="menu-item" [class.active]="currentView === 'reservas'" (click)="switchView('reservas')">
-          <ion-icon name="calendar-outline"></ion-icon> Mis reservas
-        </a>
-        <a class="menu-item" [class.active]="currentView === 'favoritos'" (click)="switchView('favoritos')">
-          <ion-icon name="heart-outline"></ion-icon> Favoritos
-        </a>
-        <a class="menu-item" [class.active]="currentView === 'pagos'" (click)="switchView('pagos')">
-          <ion-icon name="card-outline"></ion-icon> Mis pagos
-        </a>
+        <a class="menu-item" [class.active]="currentView === 'reservas'" (click)="switchView('reservas')"><ion-icon name="calendar-outline"></ion-icon> Mis reservas</a>
+        <a class="menu-item" [class.active]="currentView === 'favoritos'" (click)="switchView('favoritos')"><ion-icon name="heart-outline"></ion-icon> Favoritos</a>
+        <a class="menu-item" [class.active]="currentView === 'pagos'" (click)="switchView('pagos')"><ion-icon name="card-outline"></ion-icon> Mis pagos</a>
         <a class="menu-item"><ion-icon name="person-outline"></ion-icon> Perfil</a>
-        
         <div class="divider"></div>
-        
         <a class="menu-item logout" (click)="logout()"><ion-icon name="log-out-outline"></ion-icon> Cerrar sesión</a>
       </nav>
-
       <div class="promo-box-left">
-        <div class="promo-icon"><ion-icon name="car-outline"></ion-icon></div>
-        <h4>¿Necesitas estacionar más tiempo?</h4>
-        <p>Encuentra y reserva en nuevos lugares cercanos.</p>
-        <button class="btn-dark" routerLink="/search">Buscar estacionamiento</button>
+        <div class="promo-img-wrapper"><ion-icon name="car-outline"></ion-icon></div>
+        <h4>¿Necesitas estacionar más tiempo?</h4><button class="btn-dark" routerLink="/search">Buscar estacionamiento</button>
       </div>
     </aside>
 
@@ -84,179 +41,149 @@
         <h1 class="page-title">Mis reservas</h1>
         
         <div class="tabs">
-          <button class="tab active">Próximas</button>
-          <button class="tab">Historial</button>
+          <button class="tab" [class.active]="reservaTab === 'proximas'" (click)="switchReservaTab('proximas')">Próximas</button>
+          <button class="tab" [class.active]="reservaTab === 'historial'" (click)="switchReservaTab('historial')">Historial</button>
         </div>
 
         <div class="sub-header">
-          <h2>Próximas reservas <span class="count-badge">{{ reservas.length }}</span></h2>
+          <h2>{{ reservaTab === 'proximas' ? 'Próximas reservas' : 'Historial de reservas' }} 
+            <span class="count-badge">{{ reservaTab === 'proximas' ? reservasActivas.length : reservasHistorial.length }}</span>
+          </h2>
         </div>
 
         <div class="reservations-list">
-          <div class="res-card" *ngFor="let res of reservas">
-            <div class="card-img">
-              <img src="assets/icon/fondo-landing.png" alt="Estacionamiento">
-            </div>
+          <div class="res-card" *ngFor="let res of (reservaTab === 'proximas' ? reservasActivas : reservasHistorial)">
+            <div class="card-img"><img src="assets/icon/fondo-landing.png"></div>
             
             <div class="card-body">
               <div class="top-row">
-                <span class="type-badge">{{ res.tipo_estacionamiento || 'Privado' }}</span>
-                <span class="status-text">{{ res.estado }}</span>
+                <span class="type-badge">Privado</span>
+                <span class="status-badge" [ngClass]="{'cancelada': res.estado === 'Cancelada'}">{{ res.estado }}</span>
               </div>
               
-              <h3 class="res-title">{{ res.descripcion || 'Estacionamiento Reservado' }}</h3>
+              <h3 class="res-title">{{ res.descripcion }}</h3>
               <p class="res-address"><ion-icon name="location-outline"></ion-icon> {{ res.direccion }}</p>
               
               <div class="res-details-grid">
-                <div class="detail-item">
-                  <ion-icon name="calendar-outline"></ion-icon>
-                  <div>
-                    <strong>{{ res.fecha_reserva | date:'dd MMM yyyy' }}</strong>
-                    <span>Hora: {{ res.hora_inicio }}</span>
-                  </div>
-                </div>
-                <div class="detail-item">
-                  <ion-icon name="time-outline"></ion-icon>
-                  <div>
-                    <strong>Hasta</strong>
-                    <span>{{ res.hora_fin }}</span>
-                  </div>
-                </div>
+                <div class="detail-item"><ion-icon name="calendar-outline"></ion-icon><div><strong>{{ res.fecha_reserva | date:'longDate' }}</strong></div></div>
+                <div class="detail-item"><ion-icon name="time-outline"></ion-icon><div><strong>{{ res.hora_inicio }} - {{ res.hora_fin }}</strong></div></div>
               </div>
 
               <div class="bottom-row">
-                <div class="price-info">
-                  <span>Total a pagar</span>
-                  <strong>${{ res.monto_total | number:'1.0-0' }} CLP</strong>
-                </div>
+                <div class="price-info"><span>Total a pagar</span><strong>${{ res.monto_total | number:'1.0-0' }} CLP</strong></div>
                 <div class="action-buttons">
-                  <button class="btn-outline">Ver detalles</button>
-                  <button class="btn-solid">Cómo llegar</button>
+                  <button class="btn-outline" (click)="openDetailsModal(res)">Ver detalles</button>
+                  <button class="btn-solid" (click)="abrirRuta(res.direccion)">Cómo llegar</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="empty-state" *ngIf="reservas.length === 0" style="text-align: center; padding: 40px; color: #6b7280;">
-            <ion-icon name="calendar-outline" style="font-size: 3rem; margin-bottom: 10px;"></ion-icon>
-            <p>No tienes reservas próximas.</p>
+          <div class="empty-state" *ngIf="(reservaTab === 'proximas' ? reservasActivas : reservasHistorial).length === 0">
+            <ion-icon name="car-outline"></ion-icon>
+            <p>No tienes reservas en esta sección.</p>
           </div>
-        </div>
-
-        <div class="help-banner">
-          <div class="icon-box"><ion-icon name="calendar-outline"></ion-icon></div>
-          <div class="text-box">
-            <h4>¿Necesitas hacer cambios?</h4>
-            <p>Puedes modificar o cancelar tus reservas desde los detalles de cada reservación.</p>
-          </div>
-          <button class="btn-outline">Ver políticas</button>
         </div>
       </ng-container>
 
       <ng-container *ngIf="currentView === 'pagos'">
         <h1 class="page-title">Historial de Pagos</h1>
-        
         <div class="reservations-list">
           <div class="res-card" *ngFor="let pago of pagos" style="align-items: center;">
             <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
               <div>
                 <h3 class="res-title">{{ pago.descripcion }}</h3>
-                <p class="res-address" style="margin-top: 5px;"><ion-icon name="calendar-outline"></ion-icon> Fecha de pago: {{ pago.fecha_pago | date:'dd MMM yyyy, HH:mm' }}</p>
+                <p class="res-address" style="margin-top: 5px;"><ion-icon name="calendar-outline"></ion-icon> Pago: {{ pago.fecha_pago | date:'dd MMM yyyy' }}</p>
                 <span class="type-badge">{{ pago.metodo_pago }}</span>
               </div>
               <div style="text-align: right;">
-                <span class="status-text" style="color: #00a86b;">{{ pago.estado_pago }} <ion-icon name="checkmark-circle-outline"></ion-icon></span>
+                <span class="status-badge" style="color: #00a86b;">{{ pago.estado_pago }} <ion-icon name="checkmark-circle-outline"></ion-icon></span>
                 <h3 style="margin-top: 10px; color: #0b2447; font-size: 1.4rem; font-weight: 800;">${{ pago.monto | number:'1.0-0' }} CLP</h3>
               </div>
             </div>
           </div>
-          
-          <div class="empty-state" *ngIf="pagos.length === 0" style="text-align: center; padding: 40px; color: #6b7280;">
-            <ion-icon name="cash-outline" style="font-size: 3rem; margin-bottom: 10px;"></ion-icon>
-            <p>No tienes pagos registrados.</p>
-          </div>
         </div>
       </ng-container>
-
-      <ng-container *ngIf="currentView === 'favoritos'">
-        <h1 class="page-title">Mis Favoritos</h1>
-        <div class="empty-state" style="text-align: center; padding: 40px; color: #6b7280;">
-          <ion-icon name="heart-outline" style="font-size: 3rem; margin-bottom: 10px;"></ion-icon>
-          <p>Aún no tienes estacionamientos guardados en favoritos.</p>
-        </div>
-      </ng-container>
-
     </main>
 
     <aside class="sidebar-right">
-      
       <div class="user-profile-card">
-        <div class="avatar-container">
-          <img src="assets/icon/default-profile.png" alt="Perfil">
-          <div class="edit-badge"><ion-icon name="pencil-outline"></ion-icon></div>
-        </div>
-        
-        <h2>{{ perfil.nombre }}</h2>
-        <p class="email">{{ perfil.email }}</p>
-
+        <div class="avatar-container"><img src="assets/icon/default-profile.png"></div>
+        <h2>{{ perfil.nombre }}</h2><p class="email">{{ perfil.email }}</p>
         <div class="user-info-list">
-          <div class="info-row">
-            <ion-icon name="card-outline"></ion-icon>
-            <div>
-              <span>RUT Registrado</span>
-              <strong>{{ perfil.rut }}</strong>
-            </div>
-          </div>
-          <div class="info-row" *ngIf="perfil.telefono">
-            <ion-icon name="person-outline"></ion-icon>
-            <div>
-              <span>Teléfono de contacto</span>
-              <strong>{{ perfil.telefono }}</strong>
-            </div>
-          </div>
+          <div class="info-row"><ion-icon name="card-outline"></ion-icon><div><span>RUT</span><strong>{{ perfil.rut }}</strong></div></div>
+          <div class="info-row" *ngIf="perfil.telefono"><ion-icon name="call-outline"></ion-icon><div><span>Teléfono</span><strong>{{ perfil.telefono }}</strong></div></div>
         </div>
-
         <button class="btn-outline-full" (click)="openEditModal()"><ion-icon name="pencil-outline"></ion-icon> Editar perfil</button>
       </div>
-
-      <div class="promo-box-right">
-        <div class="promo-image">
-          <ion-icon name="business-outline" style="font-size: 3rem; color: #00a86b;"></ion-icon>
-        </div>
-        <h4>¿Tienes un estacionamiento disponible?</h4>
-        <p>Hazte socio de <strong>ParkMatch</strong> y genera ingresos arrendando tu garage, cupo residencial o estacionamiento privado.</p>
-        <button class="btn-solid-full">Publicar mi estacionamiento</button>
-      </div>
-
     </aside>
   </div>
 
   <div class="custom-modal-overlay" *ngIf="isEditing">
     <div class="custom-modal">
-      <div class="modal-header">
-        <h2>Editar mi perfil</h2>
-        <button class="btn-close" (click)="closeEditModal()"><ion-icon name="close-outline"></ion-icon></button>
-      </div>
-      
+      <div class="modal-header"><h2>Editar mi perfil</h2><button class="btn-close" (click)="closeEditModal()"><ion-icon name="close-outline"></ion-icon></button></div>
       <form [formGroup]="editForm" (ngSubmit)="guardarPerfil()">
-        <div class="form-group">
-          <label>Nombre completo</label>
-          <input type="text" formControlName="nombre" class="form-control" />
-        </div>
-        <div class="form-group">
-          <label>Correo Electrónico</label>
-          <input type="email" formControlName="email" class="form-control" />
-        </div>
-        <div class="form-group">
-          <label>Teléfono</label>
-          <input type="text" formControlName="telefono" class="form-control" />
-        </div>
-
+        <div class="form-group"><label>Nombre</label><input type="text" formControlName="nombre" class="form-control" /></div>
+        <div class="form-group"><label>Correo</label><input type="email" formControlName="email" class="form-control" /></div>
+        <div class="form-group"><label>Teléfono</label><input type="text" formControlName="telefono" class="form-control" /></div>
         <button type="submit" class="btn-save" [disabled]="editForm.invalid || isSaving">
-          <span *ngIf="!isSaving">Guardar cambios</span>
-          <ion-spinner name="crescent" *ngIf="isSaving"></ion-spinner>
+          <span *ngIf="!isSaving">Guardar cambios</span><ion-spinner name="crescent" *ngIf="isSaving"></ion-spinner>
         </button>
       </form>
+    </div>
+  </div>
+
+  <div class="custom-modal-overlay" *ngIf="isDetailsModalOpen">
+    <div class="custom-modal details-modal">
+      <div class="modal-header">
+        <h2>Detalles de la Reserva</h2>
+        <button class="btn-close" (click)="closeDetailsModal()"><ion-icon name="close-outline"></ion-icon></button>
+      </div>
+      
+      <div class="details-content" *ngIf="selectedReserva">
+        
+        <div class="status-banner" [ngClass]="{'cancelled': selectedReserva.estado === 'Cancelada'}">
+          <ion-icon [name]="selectedReserva.estado === 'Cancelada' ? 'warning-outline' : 'checkmark-circle-outline'"></ion-icon>
+          <strong>Estado: {{ selectedReserva.estado }}</strong>
+        </div>
+
+        <h3 class="place-title">{{ selectedReserva.descripcion }}</h3>
+        <p class="place-address"><ion-icon name="map-outline"></ion-icon> {{ selectedReserva.direccion }}</p>
+
+        <div class="info-grid">
+          <div class="grid-item">
+            <span>Fecha Reservada</span>
+            <strong>{{ selectedReserva.fecha_reserva | date:'fullDate' }}</strong>
+          </div>
+          <div class="grid-item">
+            <span>Horario</span>
+            <strong>{{ selectedReserva.hora_inicio }} hasta {{ selectedReserva.hora_fin }}</strong>
+          </div>
+          <div class="grid-item">
+            <span>Total Pagado</span>
+            <strong>${{ selectedReserva.monto_total | number:'1.0-0' }} CLP</strong>
+          </div>
+        </div>
+
+        <div class="cancel-section" *ngIf="reservaTab === 'proximas' && selectedReserva.estado !== 'Cancelada'">
+          
+          <button class="btn-cancel-outline" *ngIf="cancelStep === 0" (click)="iniciarCancelacion()">
+            Cancelar Reserva
+          </button>
+          
+          <div class="confirm-cancel-box" *ngIf="cancelStep === 1">
+            <p>¿Estás seguro de que deseas cancelar esta reserva? Esta acción no se puede deshacer.</p>
+            <div class="btn-group">
+              <button class="btn-keep" (click)="cancelarCancelacion()">Mantener Reserva</button>
+              <button class="btn-cancel-danger" (click)="confirmarCancelacion()" [disabled]="isCanceling">
+                <span *ngIf="!isCanceling">Sí, cancelar</span>
+                <ion-spinner name="crescent" *ngIf="isCanceling"></ion-spinner>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
 
