@@ -1,14 +1,15 @@
-export type EstadoReserva = 'activa' | 'pendiente' | 'completada' | 'cancelada';
-export type CancelStep    = 'idle' | 'confirming';
+// Añadimos 'Finalizada' a los estados permitidos
+export type EstadoReserva = 'Pendiente' | 'Confirmada' | 'Cancelada' | 'Finalizada';
 export type ProfileView   = 'reservas' | 'pagos' | 'favoritos';
 export type ReservaTab    = 'proximas' | 'historial';
 
 export interface Perfil {
-  id: number;
+  id?: number;
   nombre: string;
   email: string;
   rut: string;
   telefono?: string;
+  tipo_usuario?: string;
 }
 
 export interface Reserva {
@@ -20,6 +21,7 @@ export interface Reserva {
   hora_fin: string;
   monto_total: number;
   estado: EstadoReserva;
+  tipo_estacionamiento?: string;
 }
 
 export interface Pago {

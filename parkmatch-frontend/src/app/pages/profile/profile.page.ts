@@ -6,10 +6,10 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { AuthService } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { addIcons } from 'ionicons';
-import { 
+import {
   calendarOutline, heartOutline, cardOutline, personOutline, logOutOutline,
-  locationOutline, carOutline, timeOutline, chevronDownOutline, notificationsOutline, 
-  searchOutline, closeOutline, filterOutline, star, businessOutline, pencilOutline, 
+  locationOutline, carOutline, timeOutline, chevronDownOutline, notificationsOutline,
+  searchOutline, closeOutline, filterOutline, star, businessOutline, pencilOutline,
   alertCircleOutline, callOutline, checkmarkCircleOutline, cashOutline, mapOutline, warningOutline
 } from 'ionicons/icons';
 
@@ -23,38 +23,38 @@ import { Perfil, Reserva, Pago, ProfileView, ReservaTab } from '../../models/pro
   imports: [CommonModule, IonicModule, RouterModule, ReactiveFormsModule]
 })
 export class ProfilePage implements OnInit {
-  
+
   perfil: Perfil | null = null;
   primerNombre: string = '';
   pagos: Pago[] = [];
   reservasActivas: Reserva[] = [];
   reservasHistorial: Reserva[] = [];
-  
+
   isLoading: boolean = true;
   errorConexion: boolean = false;
-  
+
   currentView: ProfileView = 'reservas';
   reservaTab: ReservaTab = 'proximas';
-  
+
   isEditing: boolean = false;
   editForm!: FormGroup;
   isSaving: boolean = false;
 
   isDetailsModalOpen: boolean = false;
   selectedReserva: Reserva | null = null;
-  cancelStep: 0 | 1 = 0; 
+  cancelStep: 0 | 1 = 0;
   isCanceling: boolean = false;
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private authService: AuthService,
     private profileService: ProfileService,
     private fb: FormBuilder
   ) {
     addIcons({
       calendarOutline, heartOutline, cardOutline, personOutline, logOutOutline,
-      locationOutline, carOutline, timeOutline, chevronDownOutline, notificationsOutline, 
-      searchOutline, closeOutline, filterOutline, star, businessOutline, pencilOutline, 
+      locationOutline, carOutline, timeOutline, chevronDownOutline, notificationsOutline,
+      searchOutline, closeOutline, filterOutline, star, businessOutline, pencilOutline,
       alertCircleOutline, callOutline, checkmarkCircleOutline, cashOutline, mapOutline, warningOutline
     });
   }
@@ -81,16 +81,16 @@ export class ProfilePage implements OnInit {
           this.actualizarPrimerNombre();
           this.clasificarReservas(res.reservas);
           this.editForm.patchValue({
-            nombre: this.perfil.nombre, 
-            email: this.perfil.email, 
+            nombre: this.perfil.nombre,
+            email: this.perfil.email,
             telefono: this.perfil.telefono
           });
         }
         this.isLoading = false;
       },
-      error: (err) => { 
-        this.isLoading = false; 
-        this.errorConexion = true; 
+      error: (err) => {
+        this.isLoading = false;
+        this.errorConexion = true;
         if (err.status === 401) this.logout();
       }
     });
@@ -103,15 +103,23 @@ export class ProfilePage implements OnInit {
   }
 
   clasificarReservas(todasLasReservas: Reserva[]): void {
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
+    const ahora = new Date(); // Fecha y hora actual exacta
 
     this.reservasActivas = [];
     this.reservasHistorial = [];
 
     todasLasReservas.forEach(res => {
-      const fechaRes = new Date(res.fecha_reserva);
-      if (res.estado === 'cancelada' || fechaRes < hoy) {
+      const datePart = res.fecha_reserva.split('T')[0];
+      const [year, month, day] = datePart.split('-').map(Number);
+
+
+      const [horas, minutos] = res.hora_fin.split(':').map(Number);
+      const fechaFinReserva = new Date(year, month - 1, day, horas, minutos);
+
+      if (res.estado === 'Cancelada') {
+        this.reservasHistorial.push(res);
+      } else if (fechaFinReserva < ahora) {
+        res.estado = 'Finalizada';
         this.reservasHistorial.push(res);
       } else {
         this.reservasActivas.push(res);
@@ -165,7 +173,7 @@ export class ProfilePage implements OnInit {
       next: (res) => {
         this.isCanceling = false;
         if (res.ok && this.selectedReserva) {
-          this.selectedReserva.estado = 'cancelada';
+          this.selectedReserva.estado = 'Cancelada';
           this.reservasActivas = this.reservasActivas.filter(r => r.id_reserva !== this.selectedReserva?.id_reserva);
           this.reservasHistorial.unshift(this.selectedReserva);
           this.closeDetailsModal();
@@ -180,14 +188,14 @@ export class ProfilePage implements OnInit {
 
   // --- PAGOS Y PERFIL ---
   cargarPagos(): void {
-    this.profileService.getPayments().subscribe(res => { 
-      if (res.ok) this.pagos = res.pagos; 
+    this.profileService.getPayments().subscribe(res => {
+      if (res.ok) this.pagos = res.pagos;
     });
   }
 
   openEditModal(): void { this.isEditing = true; }
   closeEditModal(): void { this.isEditing = false; }
-  
+
   guardarPerfil(): void {
     if (this.editForm.invalid || !this.perfil) return;
     this.isSaving = true;
@@ -203,9 +211,9 @@ export class ProfilePage implements OnInit {
           this.closeEditModal();
         }
       },
-      error: () => { 
-        this.isSaving = false; 
-        alert('Error al guardar los cambios'); 
+      error: () => {
+        this.isSaving = false;
+        alert('Error al guardar los cambios');
       }
     });
   }

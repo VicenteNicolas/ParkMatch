@@ -58,7 +58,7 @@
             <div class="card-body">
               <div class="top-row">
                 <span class="type-badge">Privado</span>
-                <span class="status-badge" [ngClass]="{'cancelada': res.estado === 'Cancelada'}">{{ res.estado }}</span>
+                <span class="status-badge" [ngClass]="{'cancelada': res.estado === 'Cancelada', 'finalizada': res.estado === 'Finalizada'}">{{ res.estado }}</span>
               </div>
               
               <h3 class="res-title">{{ res.descripcion }}</h3>
