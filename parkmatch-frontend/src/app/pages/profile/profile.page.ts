@@ -192,7 +192,6 @@ export class ProfilePage implements OnInit {
         if (res.ok) {
           reserva.estado = estado;
           if (estado === 'Cancelada') {
-            // Mover al historial dinámicamente si se rechaza
             this.reservasActivas = this.reservasActivas.filter(r => r.id_reserva !== reserva.id_reserva);
             this.reservasHistorial.unshift(reserva);
           }
