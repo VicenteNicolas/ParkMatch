@@ -1,3 +1,8 @@
+/* ─── PARKMATCH SCSS ARCHITECTURE ────────────────────────────────────── */
+@use 'styles/abstracts' as *;
+@use 'styles/layouts/utilities';
+@use 'styles/layouts/auth';
+
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------

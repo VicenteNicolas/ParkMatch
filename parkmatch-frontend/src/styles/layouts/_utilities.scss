@@ -1,0 +1,32 @@
+@use '../abstracts' as *;
+
+/* ─── LOADING & ERROR STATES ─────────────────────────────────────────── */
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: calc(100vh - 80px);
+  color: $text-gray;
+  font-size: 0.95rem;
+
+  ion-spinner { width: 40px; height: 40px; }
+  
+  ion-icon {
+    font-size: 3rem;
+    color: #ef4444;
+    margin-bottom: 10px;
+  }
+  
+  h2 {
+    color: $navy-blue;
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+.desktop-only { 
+  display: none ; 
+}
