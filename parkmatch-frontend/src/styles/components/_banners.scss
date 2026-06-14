@@ -1,0 +1,68 @@
+@use '../abstracts/variables' as *;
+
+.promo-box-left {
+  background: $bg-main;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  border: 1px solid $border-light;
+
+  .promo-img-wrapper {
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+
+    ion-icon { font-size: 2.2rem; color: $navy-blue; }
+  }
+
+  h4 { font-size: 1rem; font-weight: 800; color: $navy-blue; margin: 0 0 10px 0; }
+  p { font-size: 0.85rem; color: $text-gray; margin: 0 0 20px 0; line-height: 1.5; }
+}
+
+.promo-box-right {
+  background: $bg-main;
+  border-radius: 16px;
+  padding: 30px 24px;
+  text-align: center;
+  border: 1px solid $border-light;
+
+  .promo-image {
+    margin-bottom: 15px;
+    .icon-circle {
+      width: 50px; height: 50px; background: $green-light; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto;
+      ion-icon { font-size: 1.8rem; color: $green-primary; }
+    }
+  }
+
+  h4 { font-size: 1rem; font-weight: 800; color: $navy-blue; margin: 0 0 10px 0; line-height: 1.3; }
+  p { font-size: 0.8rem; color: $text-gray; margin: 0 0 20px 0; line-height: 1.5; }
+}
+
+.help-banner {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: $bg-main;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 30px;
+
+  .icon-box {
+    width: 40px; height: 40px; background: $green-light; color: $green-primary;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; flex-shrink: 0;
+  }
+
+  .text-box {
+    flex: 1;
+    h4 { margin: 0 0 4px 0; font-size: 0.95rem; font-weight: 700; color: $navy-blue; }
+    p { margin: 0; font-size: 0.85rem; color: $text-gray; line-height: 1.4; }
+  }
+}

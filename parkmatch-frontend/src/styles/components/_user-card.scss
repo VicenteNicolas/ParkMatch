@@ -1,0 +1,49 @@
+@use '../abstracts/variables' as *;
+
+.user-profile-card {
+  border: 1px solid $border-light;
+  border-radius: 16px;
+  padding: 30px 24px;
+  text-align: center;
+  background: white;
+
+  .avatar-container {
+    position: relative; width: 90px; height: 90px; margin: 0 auto 15px;
+    img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+    
+    .edit-badge {
+      position: absolute; bottom: 0; right: 0; width: 26px; height: 26px;
+      background: $green-primary; color: white; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid white; cursor: pointer; font-size: 0.85rem;
+    }
+  }
+
+  h2 { font-size: 1.2rem; font-weight: 800; color: $navy-blue; margin: 0 0 5px 0; }
+  .email { font-size: 0.85rem; color: $text-gray; margin: 0 0 15px 0; }
+
+  .rating-box {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid $border-light;
+
+    ion-icon { color: #fbbf24; font-size: 1.2rem; }
+    strong { font-size: 1rem; color: $navy-blue; }
+    span { font-size: 0.75rem; color: $text-gray; }
+  }
+
+  .user-info-list {
+    display: flex; flex-direction: column; gap: 15px; text-align: left; margin-bottom: 25px;
+
+    .info-row {
+      display: flex; align-items: flex-start; gap: 12px;
+
+      ion-icon { font-size: 1.2rem; color: $text-gray; margin-top: 2px; }
+
+      div {
+        display: flex; flex-direction: column;
+        span { font-size: 0.8rem; color: $text-gray; margin-bottom: 2px; }
+        strong { font-size: 0.9rem; color: $navy-blue; }
+      }
+    }
+  }
+}

@@ -1,0 +1,66 @@
+@use '../abstracts/variables' as *;
+
+/* --- Menú Lateral Principal --- */
+.side-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 40px;
+
+  .menu-item {
+    display: flex; align-items: center; gap: 15px; padding: 14px 20px;
+    border-radius: 12px; font-size: 0.95rem; font-weight: 600; color: $text-gray;
+    cursor: pointer; transition: background 0.2s; text-decoration: none;
+
+    ion-icon { font-size: 1.3rem; }
+
+    &.active {
+      background: $green-light; color: $green-primary;
+      ion-icon { color: $green-primary; }
+    }
+
+    &:hover:not(.active) { background: $bg-main; color: $navy-blue; }
+
+    &.logout {
+      margin-top: 20px; color: #ef4444;
+      ion-icon { color: #ef4444; }
+      &:hover { background: #fef2f2; }
+    }
+  }
+}
+
+/* --- Navegación por Pestañas Internas --- */
+.tabs {
+  display: flex;
+  gap: 30px;
+  border-bottom: 1px solid $border-light;
+  margin-bottom: 30px;
+
+  .tab {
+    background: none; border: none; padding: 0 0 12px 0; font-size: 1rem;
+    font-weight: 700; color: $text-gray; cursor: pointer; position: relative;
+
+    &.active {
+      color: $green-primary;
+      &::after {
+        content: ''; position: absolute; bottom: -1px; left: 0;
+        width: 100%; height: 3px; background: $green-primary; border-radius: 3px 3px 0 0;
+      }
+    }
+  }
+}
+
+/* --- Encabezados y Contadores --- */
+.sub-header {
+  margin-bottom: 20px;
+
+  h2 {
+    font-size: 1.1rem; font-weight: 700; color: $navy-blue;
+    display: flex; align-items: center; gap: 10px; margin: 0;
+
+    .count-badge {
+      background: $green-light; color: $green-primary; padding: 2px 8px;
+      border-radius: 12px; font-size: 0.8rem;
+    }
+  }
+}
