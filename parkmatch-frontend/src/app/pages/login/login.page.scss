@@ -1,4 +1,4 @@
-@import '../../../styles/abstracts/variables';
+@use '../../../styles/abstracts/variables' as *;
 
 .auth-background {
   --background: url('/../../assets/icon/fondo-login (5).png') no-repeat center center / cover ;
