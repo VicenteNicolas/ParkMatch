@@ -17,9 +17,12 @@ export const getProfile = async (req: AuthRequest, res: Response): Promise<void>
 
         const perfil = usuarios[0];
         let reservasQuery = '';
-        let params = [];
+        let params = [id_usuario];
+        let estacionamientos: any[] = [];
 
+        // Lógica diferenciada por tipo de usuario
         if (perfil.tipo_usuario === 'Propietario') {
+            // Trae las reservas hechas a SUS estacionamientos
             reservasQuery = `
                 SELECT r.id as id_reserva, r.fecha_reserva, r.hora_inicio, r.hora_fin, r.monto_total, r.estado,
                        e.direccion, e.descripcion, e.precio_hora,
@@ -29,8 +32,17 @@ export const getProfile = async (req: AuthRequest, res: Response): Promise<void>
                 JOIN Usuario u ON r.id_conductor = u.id
                 WHERE e.id_propietario = ?
                 ORDER BY r.fecha_reserva DESC`;
-            params = [id_usuario];
+
+            // Novedad: Trae los estacionamientos que tiene publicados
+            const [estacionamientosData] = await pool.query<RowDataPacket[]>(
+                `SELECT id, direccion, latitud, longitud, precio_hora, descripcion, disponibilidad
+                 FROM Estacionamiento
+                 WHERE id_propietario = ?`,
+                [id_usuario]
+            );
+            estacionamientos = estacionamientosData;
         } else {
+            // Trae las reservas que él hizo como Conductor
             reservasQuery = `
                 SELECT r.id as id_reserva, r.fecha_reserva, r.hora_inicio, r.hora_fin, r.monto_total, r.estado,
                        e.direccion, e.descripcion, e.precio_hora
@@ -38,16 +50,56 @@ export const getProfile = async (req: AuthRequest, res: Response): Promise<void>
                 JOIN Estacionamiento e ON r.id_estacionamiento = e.id
                 WHERE r.id_conductor = ?
                 ORDER BY r.fecha_reserva DESC`;
-            params = [id_usuario];
         }
 
         const [reservas] = await pool.query<RowDataPacket[]>(reservasQuery, params);
-        res.status(200).json({ ok: true, perfil, reservas });
+        res.status(200).json({ ok: true, perfil, reservas, estacionamientos });
     } catch (error) {
+        console.error('Error en getProfile:', error);
         res.status(500).json({ ok: false, message: 'Error interno del servidor' });
     }
 };
 
+// Función restaurada
+export const updateProfile = async (req: AuthRequest, res: Response): Promise<void> => {
+    const id_conductor = req.user?.id;
+    const { nombre, email, telefono } = req.body;
+
+    if (!id_conductor) { res.status(401).json({ ok: false, message: 'No autenticado' }); return; }
+
+    try {
+        await pool.query<ResultSetHeader>(
+            'UPDATE Usuario SET nombre = ?, email = ?, telefono = ? WHERE id = ?',
+            [nombre, email, telefono, id_conductor]
+        );
+        res.status(200).json({ ok: true, message: 'Perfil actualizado correctamente' });
+    } catch (error) {
+        console.error('Error al actualizar perfil:', error);
+        res.status(500).json({ ok: false, message: 'Error al actualizar los datos' });
+    }
+};
+
+// Función restaurada
+export const getMyPayments = async (req: AuthRequest, res: Response): Promise<void> => {
+    const id_conductor = req.user?.id;
+    if (!id_conductor) { res.status(401).json({ ok: false, message: 'No autenticado' }); return; }
+
+    try {
+        const [pagos] = await pool.query<RowDataPacket[]>(
+            `SELECT p.id, p.fecha_pago, p.metodo_pago, p.monto, p.estado_pago,
+                    r.fecha_reserva, e.descripcion
+             FROM Pago p
+             JOIN Reserva r ON p.id_reserva = r.id
+             JOIN Estacionamiento e ON r.id_estacionamiento = e.id
+             WHERE r.id_conductor = ?
+             ORDER BY p.fecha_pago DESC`,
+            [id_conductor]
+        );
+        res.status(200).json({ ok: true, pagos });
+    } catch (error) {
+        res.status(500).json({ ok: false, message: 'Error al cargar los pagos' });
+    }
+};
 
 export const responderReserva = async (req: AuthRequest, res: Response): Promise<void> => {
     const { id } = req.params;
@@ -71,6 +123,7 @@ export const responderReserva = async (req: AuthRequest, res: Response): Promise
 
         res.status(200).json({ ok: true, message: `Reserva ${estado.toLowerCase()} exitosamente` });
     } catch (error) {
+        console.error('Error al responder reserva:', error);
         res.status(500).json({ ok: false, message: 'Error al actualizar reserva' });
     }
 };
