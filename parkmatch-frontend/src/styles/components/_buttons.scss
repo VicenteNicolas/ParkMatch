@@ -1,0 +1,109 @@
+@use '../abstracts/variables' as *;
+
+/* ─── BOTONES PRINCIPALES (Verde) ─── */
+.btn-solid,
+.btn-solid-full,
+.btn-save,
+.btn-reserve,
+.btn-confirm,
+.btn-pay {
+  background: $green-primary;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) {
+    background: darken($green-primary, 5%);
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  ion-icon {
+    font-size: 1.3rem;
+  }
+}
+
+/* Tamaños específicos */
+.btn-solid { padding: 8px 16px; font-size: 0.85rem; }
+.btn-solid-full { width: 100%; padding: 12px; font-size: 0.9rem; }
+.btn-save { width: 100%; padding: 14px; font-size: 1.05rem; margin-top: 10px; }
+.btn-reserve, .btn-confirm, .btn-pay { width: 100%; padding: 18px 24px; font-size: 1.1rem; margin-bottom: 15px; }
+
+/* ─── BOTONES SECUNDARIOS (Navy / Outline) ─── */
+.btn-outline,
+.btn-outline-full {
+  background: white;
+  border: 1px solid $border-light;
+  color: $navy-blue;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s;
+
+  &:hover { background: $bg-main; }
+}
+
+.btn-outline { padding: 8px 16px; font-size: 0.85rem; border-color: $navy-blue; }
+.btn-outline-full { width: 100%; padding: 10px; font-size: 0.9rem; }
+
+.btn-dark {
+  width: 100%;
+  background: $navy-blue;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ─── BOTONES PELIGRO / CANCELACIÓN ─── */
+.btn-cancel-outline {
+  width: 100%; padding: 14px; background: white; border: 1px solid #ef4444; color: #ef4444; border-radius: 8px; font-weight: 700; cursor: pointer; transition: background 0.2s;
+  &:hover { background: #fef2f2; }
+}
+
+.btn-cancel-danger {
+  flex: 1; padding: 12px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; transition: background 0.2s;
+  &:hover:not(:disabled) { background: darken(#ef4444, 5%); }
+  &:disabled { opacity: 0.7; }
+}
+
+.action-buttons .btn-outline.cancel {
+  border-color: #ef4444; color: #ef4444;
+  &:hover { background: #fef2f2; }
+}
+
+.btn-keep {
+  flex: 1; padding: 12px; background: white; border: 1px solid #d1d5db; color: #374151; border-radius: 8px; font-weight: 700; cursor: pointer;
+}
+
+/* ─── BOTONES DE UTILIDAD (Iconos) ─── */
+.btn-close {
+  background: none; border: none; font-size: 1.5rem; color: $text-gray; cursor: pointer; transition: color 0.2s;
+  &:hover { color: #ef4444; }
+}
+
+.btn-back {
+  width: 45px; height: 45px; border-radius: 12px; border: 1px solid $border-light; background: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: $navy-blue; cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+  &:hover { background: $bg-main; }
+}
+
+.btn-step {
+  width: 32px; height: 32px; border-radius: 8px; border: 1px solid $border-light; background: white; color: $navy-blue; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; transition: background 0.2s;
+  &:hover:not(:disabled) { background: $bg-main; }
+  &:disabled { color: #cbd5e1; cursor: not-allowed; }
+}

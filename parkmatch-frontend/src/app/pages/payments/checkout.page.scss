@@ -86,8 +86,6 @@ $text-gray: #6b7280;
     
     .total-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; span { font-size: 1.1rem; color: $text-gray; } strong { font-size: 1.5rem; color: $navy-blue; font-weight: 800; } }
 
-    .btn-pay { width: 100%; display: flex; align-items: center; justify-content: center; background: $green-accent; color: white; border: none; border-radius: 8px; padding: 18px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: background 0.2s; margin-bottom: 15px; ion-icon { margin-right: 8px; font-size: 1.3rem; } &:hover:not(:disabled) { background: darken($green-accent, 5%); } &:disabled { opacity: 0.7; cursor: not-allowed; } }
-    
     .footer-note { margin: 0; text-align: center; font-size: 0.85rem; color: $text-gray; display: flex; align-items: center; justify-content: center; gap: 6px; }
   }
 }

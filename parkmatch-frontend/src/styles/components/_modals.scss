@@ -1,0 +1,88 @@
+@use '../abstracts/variables' as *;
+
+/* ─── OVERLAY GENERAL ─── */
+.custom-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1000;
+  background: rgba(11, 36, 71, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── ESTRUCTURA BASE DEL MODAL ─── */
+.custom-modal {
+  background: white;
+  width: 100%;
+  max-width: 450px;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: $navy-blue;
+      margin: 0;
+    }
+  }
+
+  /* Elementos de formulario internos */
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block; font-size: 0.85rem; font-weight: 700; color: $text-gray; margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%; padding: 12px 15px; border: 1px solid $border-light; border-radius: 8px; font-size: 1rem; color: $navy-blue; font-weight: 500; font-family: inherit;
+      &:focus { border-color: $green-primary; outline: none; }
+    }
+  }
+}
+
+/* ─── VARIANTE: DETALLES Y CANCELACIÓN (Hereda de .custom-modal) ─── */
+.details-modal {
+  max-width: 500px;
+
+  .status-banner {
+    display: flex; align-items: center; gap: 10px; padding: 15px; border-radius: 8px; background: $green-light; color: $green-primary; margin-bottom: 20px;
+    ion-icon { font-size: 1.5rem; }
+    strong { font-size: 1.05rem; }
+    &.cancelled { background: #fef2f2; color: #ef4444; }
+  }
+
+  .place-title { font-size: 1.3rem; font-weight: 800; color: $navy-blue; margin: 0 0 8px 0; }
+  
+  .place-address {
+    display: flex; align-items: center; gap: 6px; font-size: 0.9rem; color: $text-gray; margin: 0 0 25px 0; border-bottom: 1px solid $border-light; padding-bottom: 20px;
+  }
+
+  .info-grid {
+    display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;
+    .grid-item {
+      display: flex; justify-content: space-between; align-items: center;
+      span { color: $text-gray; font-size: 0.95rem; }
+      strong { color: $navy-blue; font-size: 1rem; font-weight: 700; }
+    }
+  }
+
+  .cancel-section {
+    border-top: 1px solid $border-light; padding-top: 25px; margin-top: 10px;
+
+    .confirm-cancel-box {
+      background: #fef2f2; border: 1px solid #fca5a5; padding: 15px; border-radius: 8px; text-align: center;
+      p { margin: 0 0 15px 0; font-size: 0.85rem; color: #b91c1c; font-weight: 600; line-height: 1.4; }
+      .btn-group { display: flex; gap: 10px; }
+    }
+  }
+}

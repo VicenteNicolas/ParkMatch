@@ -8,23 +8,6 @@ $text-gray:    #6b7280;
   --background: #fdfdfd;
 }
 
-/* ─── LOADING STATE ──────────────────────────────────────────────────── */
-/* ✅ MEJORA: Pantalla de carga mientras llegan los datos */
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  min-height: calc(100vh - 80px);
-  color: $text-gray;
-  font-size: 0.95rem;
-
-  ion-spinner { width: 40px; height: 40px; }
-}
-
-
-
 /* ─── CONTENEDOR PRINCIPAL ───────────────────────────────────────────── */
 .detail-container {
   max-width: 1200px;
@@ -154,7 +137,6 @@ $text-gray:    #6b7280;
       span     { display: block; font-size: 0.8rem; color: $text-gray; margin-bottom: 4px; }
       strong   { display: block; font-size: 0.95rem; color: $navy-blue; font-weight: 600; }
 
-      // ✅ FIX 4: Controles de duración inline
       &.editable {
         flex-wrap: wrap;
 
@@ -163,16 +145,6 @@ $text-gray:    #6b7280;
 
         .duration-controls {
           display: flex; gap: 6px; margin-left: auto;
-
-          .btn-step {
-            width: 32px; height: 32px; border-radius: 8px; border: 1px solid $border-color;
-            background: white; color: $navy-blue;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; cursor: pointer; transition: background 0.2s;
-
-            &:hover:not(:disabled) { background: #f1f5f9; }
-            &:disabled { color: #cbd5e1; cursor: not-allowed; }
-          }
         }
       }
     }
@@ -183,15 +155,6 @@ $text-gray:    #6b7280;
     margin-bottom: 20px;
     span         { font-size: 1.1rem; color: $navy-blue; font-weight: 700; }
     .total-amount { font-size: 1.6rem; color: $green-accent; font-weight: 800; }
-  }
-
-  .btn-reserve {
-    width: 100%; display: flex; justify-content: space-between; align-items: center;
-    background: $green-accent; color: white; border: none; border-radius: 8px;
-    padding: 18px 24px; font-size: 1.1rem; font-weight: 700; cursor: pointer;
-    margin-bottom: 15px; transition: background 0.2s;
-    &:hover { background: darken($green-accent, 5%); }
-    ion-icon { font-size: 1.3rem; }
   }
 
   .secure-payment {
