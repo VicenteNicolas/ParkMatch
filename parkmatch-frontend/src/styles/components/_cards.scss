@@ -1,0 +1,17 @@
+@use '../abstracts/variables' as *;
+
+.parking-card,
+.res-card,
+.property-info-card,
+.summary-card {
+  background: white;
+  border: 1px solid $border-color;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.parking-card,
+.res-card,
+.property-info-card {
+  display: flex;
+}

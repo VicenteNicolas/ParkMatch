@@ -219,12 +219,8 @@ $bg-main: #f8fafc;
     gap: 20px;
 
     .res-card {
-      display: flex;
       gap: 20px;
-      border: 1px solid $border-light;
-      border-radius: 16px;
       padding: 20px;
-      background: white;
 
       .card-img {
         width: 200px;
@@ -250,40 +246,6 @@ $bg-main: #f8fafc;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 5px;
-
-          .type-badge {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #3b82f6;
-            background: #eff6ff;
-            padding: 4px 10px;
-            border-radius: 6px;
-          }
-
-          .status-badge {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: $green-primary;
-            border: 1px solid $green-light;
-            padding: 4px 10px;
-            border-radius: 6px;
-            background: white;
-
-            &.cancelada {
-              color: #ef4444 !important;
-              border-color: #fca5a5 !important;
-              background: #fef2f2 !important;
-            }
-
-            &.finalizada {
-              color: #4b5563 !important;
-              /* Texto gris oscuro */
-              border-color: #d1d5db !important;
-              /* Borde gris claro */
-              background: #f3f4f6 !important;
-              /* Fondo gris muy claro */
-            }
-          }
         }
 
         .res-title {
@@ -908,13 +870,7 @@ $bg-main: #f8fafc;
   }
 }
 
-/* --- Insignia Pendiente y Caja de Conductor --- */
-.status-badge.pendiente {
-  color: #d97706 !important;
-  border-color: #fcd34d !important;
-  background: #fffbeb !important;
-}
-
+/* --- Caja de Conductor --- */
 .conductor-box {
   background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px;
   padding: 10px 15px; margin-bottom: 15px;

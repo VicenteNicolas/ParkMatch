@@ -27,7 +27,7 @@ $text-gray: #6b7280;
 /* COLUMNA IZQUIERDA: Resumen */
 .summary-column {
   .summary-card {
-    background: white; border: 1px solid $border-color; border-radius: 16px; padding: 24px;
+    padding: 24px;
     
     .parking-header {
       display: flex; gap: 15px; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6; margin-bottom: 20px;
@@ -54,7 +54,7 @@ $text-gray: #6b7280;
       .amount { font-size: 1.5rem; font-weight: 800; color: $green-accent; }
     }
 
-    .secure-badge { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.85rem; color: $text-gray; ion-icon { color: $green-accent; font-size: 1.2rem; } }
+    .secure-badge { gap: 8px; color: $text-gray; ion-icon { color: $green-accent; font-size: 1.2rem; } }
   }
 }
 

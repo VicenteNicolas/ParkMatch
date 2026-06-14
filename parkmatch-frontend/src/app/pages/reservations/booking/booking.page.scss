@@ -39,12 +39,12 @@ $text-gray:    #6b7280;
 
 /* ─── PROPERTY CARD ──────────────────────────────────────────────────── */
 .property-info-card {
-  display: flex; align-items: center; border: 1px solid $border-color; border-radius: 12px; padding: 20px; margin-bottom: 40px; gap: 20px;
+  align-items: center; padding: 20px; margin-bottom: 40px; gap: 20px;
   .property-img { width: 150px; height: 100px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
   .property-details {
     flex: 1; h2 { margin: 0 0 8px 0; font-size: 1.2rem; font-weight: 700; color: $navy-blue; }
     .location { margin: 0 0 10px 0; font-size: 0.9rem; color: $text-gray; display: flex; align-items: center; gap: 5px; ion-icon { font-size: 1.1rem; } }
-    .badge { background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-block; margin-bottom: 10px; }
+    .badge { margin-bottom: 10px; }
     .meta-info {
       display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: $text-gray; font-weight: 500;
       .rating { color: $navy-blue; display: flex; align-items: center; gap: 4px; ion-icon { color: $green-accent; } }

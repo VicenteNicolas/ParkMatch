@@ -70,12 +70,7 @@ $text-gray: #6b7280;
 
 /* TARJETAS DE ESTACIONAMIENTO */
 .parking-card {
-  display: flex;
-  border: 1px solid $border-color;
-  border-radius: 16px;
-  overflow: hidden;
   min-height: 160px; /* FIX: Cambiado de height a min-height para evitar que se corte el contenido */
-  background: white;
   transition: box-shadow 0.2s;
 
   &:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
@@ -96,13 +91,6 @@ $text-gray: #6b7280;
 
     .card-header {
       display: flex; justify-content: space-between; align-items: center;
-      
-      .badge {
-        font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;
-        &.privado { background: #e6f6f4; color: $green-accent; }
-        &.residencial { background: #eef2ff; color: #4f46e5; }
-        &.convenio { background: #f3e8ff; color: #9333ea; }
-      }
       
       .favorite-btn { font-size: 1.5rem; transition: transform 0.1s; &:active { transform: scale(0.8); } }
     }
