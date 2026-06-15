@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router'; 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ParkingService } from '../../../services/parking.service';
 import { addIcons } from 'ionicons';
 import {
   arrowBackOutline, locationOutline, calendarOutline, timeOutline,
@@ -12,7 +13,6 @@ import {
   pricetagOutline, walletOutline, shieldCheckmarkOutline 
 } from 'ionicons/icons';
 
-import { environment } from '../../../../environments/environment';
 
 interface EstacionamientoDetalle {
   nombre: string;
@@ -45,7 +45,7 @@ export class BookingPage implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private parkingService: ParkingService
   ) {
     addIcons({
       arrowBackOutline, locationOutline, calendarOutline, timeOutline,
@@ -83,7 +83,7 @@ export class BookingPage implements OnInit {
 
   cargarEstacionamiento(id: number) {
     this.isLoading = true;
-    this.http.get<{ ok: boolean; data: any[] }>(`${environment.apiUrl}/parkings/available`)
+    this.parkingService.getAvailableParkings<any>()
       .subscribe({
         next: (res) => {
           if (res.ok) {

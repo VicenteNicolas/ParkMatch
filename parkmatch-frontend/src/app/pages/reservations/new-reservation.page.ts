@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ParkingService } from '../../services/parking.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+
 import { addIcons } from 'ionicons';
 import {
   arrowBackOutline, locationOutline, calendarOutline,
@@ -12,7 +14,6 @@ import {
   chevronDownOutline, addOutline, removeOutline
 } from 'ionicons/icons';
 
-import { environment } from '../../../environments/environment';
 
 interface EstacionamientoDetalle {
   id: number;
@@ -65,7 +66,8 @@ export class NewReservationPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private parkingService: ParkingService
   ) {
     addIcons({
       'arrow-back-outline':        arrowBackOutline,
@@ -105,7 +107,7 @@ export class NewReservationPage implements OnInit {
 
   cargarDetalleEstacionamiento(id: number) {
     this.isLoading = true;
-    this.http.get<{ ok: boolean; data: any[] }>(`${environment.apiUrl}/parkings/available`)
+    this.parkingService.getAvailableParkings<any>()
       .subscribe({
         next: (res) => {
           if (res.ok) {

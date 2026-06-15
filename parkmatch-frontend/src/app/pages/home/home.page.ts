@@ -6,7 +6,7 @@ import { RouterModule, Router } from '@angular/router';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
-import { environment } from '../../../environments/environment';
+import { ParkingService } from '../../services/parking.service';
 import { addIcons } from 'ionicons';
 import { 
   personCircleOutline, star, locationOutline, carSportOutline,
@@ -58,7 +58,7 @@ export class HomePage implements OnInit {
     mapId: "DEMO_MAP_ID" 
   };
 
-  constructor(private http: HttpClient, private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router, private parkingService: ParkingService) {
     addIcons({ 
       personCircleOutline, star, locationOutline, carSportOutline,
       searchOutline, closeOutline, calendarOutline, timeOutline, 
@@ -81,7 +81,7 @@ export class HomePage implements OnInit {
   }
 
   cargarEstacionamientos() {
-    this.http.get<{ok: boolean, data: Estacionamiento[]}>(`${environment.apiUrl}/parkings/available`)
+    this.parkingService.getAvailableParkings<Estacionamiento>()
       .subscribe({
         next: (res) => {
           if (res.ok) {

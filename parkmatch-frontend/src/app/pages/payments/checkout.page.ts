@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
+import { ParkingService } from '../../services/parking.service';
 import { addIcons } from 'ionicons';
 import { 
   arrowBackOutline, calendarOutline, timeOutline, shieldCheckmarkOutline, 
@@ -35,7 +36,8 @@ export class CheckoutPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+    private parkingService: ParkingService
   ) {
     addIcons({
       arrowBackOutline, calendarOutline, timeOutline, shieldCheckmarkOutline, 
@@ -57,7 +59,7 @@ export class CheckoutPage implements OnInit {
   }
 
   cargarDatosEstacionamiento(id: number) {
-    this.http.get<{ok: boolean, data: any[]}>(`${environment.apiUrl}/parkings/available`)
+    this.parkingService.getAvailableParkings<any>()
       .subscribe({
         next: (res) => {
           if (res.ok) {
