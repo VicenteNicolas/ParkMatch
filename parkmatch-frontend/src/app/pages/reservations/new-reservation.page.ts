@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ParkingService } from '../../services/parking.service';
-import { HttpClient } from '@angular/common/http';
+
 
 import { addIcons } from 'ionicons';
 import {
@@ -66,7 +66,6 @@ export class NewReservationPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
     private parkingService: ParkingService
   ) {
     addIcons({

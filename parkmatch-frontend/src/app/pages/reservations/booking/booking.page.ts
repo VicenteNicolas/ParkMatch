@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router'; 
-import { HttpClient } from '@angular/common/http';
 import { ParkingService } from '../../../services/parking.service';
 import { addIcons } from 'ionicons';
 import {

@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from '../../services/auth.service';
-import { environment } from '../../../environments/environment';
 import { ParkingService } from '../../services/parking.service';
+import { TransactionService } from '../../services/transaction.service';
+import { switchMap } from 'rxjs/operators';
 import { addIcons } from 'ionicons';
 import { 
   arrowBackOutline, calendarOutline, timeOutline, shieldCheckmarkOutline, 
@@ -35,8 +34,7 @@ export class CheckoutPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
-    private authService: AuthService,
+    private transactionService: TransactionService,
     private parkingService: ParkingService
   ) {
     addIcons({
@@ -86,8 +84,6 @@ export class CheckoutPage implements OnInit {
 
   procesarPago() {
     this.procesando = true;
-    const token = this.authService.getToken();
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // Payload de la Fase 1: Creación de la reserva
     const reservaPayload = {
@@ -98,45 +94,40 @@ export class CheckoutPage implements OnInit {
       monto_total: this.totalPagar
     };
 
-    // 1. Solicitud para crear la reserva
-    this.http.post<{ok: boolean, message: string, id_reserva: number}>(
-      `${environment.apiUrl}/reservations`, reservaPayload, { headers }
+    // 1. Solicitud para crear la reserva encadenada con el pago
+    this.transactionService.createReservation(reservaPayload).pipe(
+      switchMap((resReserva: any) => {
+        if (!resReserva.ok || !resReserva.id_reserva) {
+          throw new Error('FALLO_RESERVA');
+        }
+        
+        // Payload de la Fase 2: Confirmación del Pago
+        const pagoPayload = {
+          id_reserva: resReserva.id_reserva,
+          metodo_pago: this.metodoPagoSeleccionado
+        };
+
+        return this.transactionService.processPayment(pagoPayload);
+      })
     ).subscribe({
-      next: (resReserva) => {
-        if (resReserva.ok && resReserva.id_reserva) {
-          
-          // Payload de la Fase 2: Confirmación del Pago
-          const pagoPayload = {
-            id_reserva: resReserva.id_reserva,
-            metodo_pago: this.metodoPagoSeleccionado
-          };
-
-          // 2. Solicitud para procesar el pago y confirmar reserva
-          this.http.post(`${environment.apiUrl}/payments`, pagoPayload, { headers }).subscribe({
-            next: (resPago: any) => {
-              this.procesando = false;
-              if (resPago.ok) {
-                // Todo fue exitoso, redirigimos a la pantalla de éxito
-                this.router.navigate(['/reservations/success']);
-              }
-            },
-            error: (errPago) => {
-              this.procesando = false;
-              console.error('Error al procesar el pago:', errPago);
-              alert('Hubo un problema al procesar su pago, pero la reserva quedó Pendiente.');
-            }
-          });
-
+      next: (resPago: any) => {
+        this.procesando = false;
+        if (resPago.ok) {
+          // Todo fue exitoso, redirigimos a la pantalla de éxito
+          this.router.navigate(['/reservations/success']);
         }
       },
-      error: (errReserva) => {
+      error: (err) => {
         this.procesando = false;
-        console.error('Error creando reserva:', errReserva);
-        // Manejo del error de concurrencia definido en tu backend (CP-04)
-        if (errReserva.status === 409) {
+        console.error('Error en la transacción:', err);
+        
+        // Manejo diferenciado de errores
+        if (err.status === 409) {
           alert('Este espacio ya fue reservado por otro usuario en el mismo horario. Por favor, seleccione otro.');
+        } else if (err.url && err.url.includes('/payments')) {
+          alert('Hubo un problema al procesar su pago, pero la reserva quedó Pendiente.');
         } else {
-          alert('Ocurrió un error al intentar crear la reserva.');
+          alert('Ocurrió un error al intentar procesar la transacción.');
         }
       }
     });

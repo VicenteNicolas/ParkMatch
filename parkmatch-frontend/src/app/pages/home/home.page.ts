@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule, Router } from '@angular/router';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { ParkingService } from '../../services/parking.service';
 import { addIcons } from 'ionicons';
