@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 import { environment } from '../../environments/environment';
+import { CreateReservationDTO, PaymentRequestDTO, TransactionResponse } from '../models/transaction.models';
+import { Reserva } from '../models/profile.models';
 
 @Injectable({
   providedIn: 'root'
@@ -18,15 +20,15 @@ export class TransactionService {
     return new HttpHeaders({ 'Authorization': `Bearer ${token}` });
   }
 
-  createReservation(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reservations`, data, { headers: this.getHeaders() });
+  createReservation(data: CreateReservationDTO): Observable<TransactionResponse> {
+    return this.http.post<TransactionResponse>(`${this.apiUrl}/reservations`, data, { headers: this.getHeaders() });
   }
 
-  getMyReservations(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/reservations`, { headers: this.getHeaders() });
+  getMyReservations(): Observable<{ok: boolean, data: Reserva[]}> {
+    return this.http.get<{ok: boolean, data: Reserva[]}>(`${this.apiUrl}/reservations`, { headers: this.getHeaders() });
   }
 
-  processPayment(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/payments`, data, { headers: this.getHeaders() });
+  processPayment(data: PaymentRequestDTO): Observable<TransactionResponse> {
+    return this.http.post<TransactionResponse>(`${this.apiUrl}/payments`, data, { headers: this.getHeaders() });
   }
 }

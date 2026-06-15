@@ -1,25 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-
-export interface User {
-  id: number;
-  nombre: string;
-  email: string;
-  rut: string;
-  tipo_usuario: 'Conductor' | 'Propietario' | 'Administrador';
-}
-
-export interface AuthResponse {
-  ok: boolean;
-  token?: string;
-  user?: User;
-  message?: string;
-  errors?: any[];
-}
+import { User, AuthResponse, LoginDTO, RegisterDTO } from '../models/auth.models';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +34,7 @@ export class AuthService {
     return user.tipo_usuario;
   }
 
-  register(userData: any): Observable<AuthResponse> {
+  register(userData: RegisterDTO): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, userData).pipe(
       tap(res => {
         if (res.ok && res.token && res.user) {
@@ -59,7 +44,7 @@ export class AuthService {
     );
   }
 
-  login(credentials: any): Observable<AuthResponse> {
+  login(credentials: LoginDTO): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(res => {
         if (res.ok && res.token && res.user) {
