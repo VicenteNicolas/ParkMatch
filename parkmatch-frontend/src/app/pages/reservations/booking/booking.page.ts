@@ -12,6 +12,8 @@ import {
   pricetagOutline, walletOutline, shieldCheckmarkOutline 
 } from 'ionicons/icons';
 
+import { environment } from '../../../../environments/environment';
+
 interface EstacionamientoDetalle {
   nombre: string;
   direccion: string;
@@ -81,7 +83,7 @@ export class BookingPage implements OnInit {
 
   cargarEstacionamiento(id: number) {
     this.isLoading = true;
-    this.http.get<{ ok: boolean; data: any[] }>('http://localhost:3000/api/parkings/available')
+    this.http.get<{ ok: boolean; data: any[] }>(`${environment.apiUrl}/parkings/available`)
       .subscribe({
         next: (res) => {
           if (res.ok) {

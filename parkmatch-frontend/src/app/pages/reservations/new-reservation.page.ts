@@ -12,6 +12,8 @@ import {
   chevronDownOutline, addOutline, removeOutline
 } from 'ionicons/icons';
 
+import { environment } from '../../../environments/environment';
+
 interface EstacionamientoDetalle {
   id: number;
   direccion: string;
@@ -103,7 +105,7 @@ export class NewReservationPage implements OnInit {
 
   cargarDetalleEstacionamiento(id: number) {
     this.isLoading = true;
-    this.http.get<{ ok: boolean; data: any[] }>('http://localhost:3000/api/parkings/available')
+    this.http.get<{ ok: boolean; data: any[] }>(`${environment.apiUrl}/parkings/available`)
       .subscribe({
         next: (res) => {
           if (res.ok) {
