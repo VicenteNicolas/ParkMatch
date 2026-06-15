@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
 import { ParkingService } from '../../services/parking.service';
@@ -18,7 +18,7 @@ import {
   templateUrl: './checkout.page.html',
   styleUrls: ['./checkout.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, HttpClientModule]
+  imports: [CommonModule, IonicModule]
 })
 export class CheckoutPage implements OnInit {
   totalPagar: number = 0;

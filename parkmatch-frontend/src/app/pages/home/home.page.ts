@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule, Router } from '@angular/router';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { ParkingService } from '../../services/parking.service';
 import { addIcons } from 'ionicons';
@@ -37,7 +37,7 @@ interface Estacionamiento {
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule, GoogleMapsModule, HttpClientModule]
+  imports: [CommonModule, FormsModule, IonicModule, RouterModule, GoogleMapsModule]
 })
 export class HomePage implements OnInit {
   center: google.maps.LatLngLiteral = { lat: -33.0456, lng: -71.6203 };

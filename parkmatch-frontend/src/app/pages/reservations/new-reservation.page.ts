@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ParkingService } from '../../services/parking.service';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import { addIcons } from 'ionicons';
 import {
@@ -28,7 +28,7 @@ interface EstacionamientoDetalle {
   templateUrl: './new-reservation.page.html',
   styleUrls: ['./new-reservation.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, RouterModule, HttpClientModule]
+  imports: [CommonModule, IonicModule, RouterModule]
 })
 export class NewReservationPage implements OnInit {
   estacionamientoId: number | null = null;

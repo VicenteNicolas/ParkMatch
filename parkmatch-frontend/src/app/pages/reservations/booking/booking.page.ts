@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router'; 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ParkingService } from '../../../services/parking.service';
 import { addIcons } from 'ionicons';
 import {
@@ -26,7 +26,7 @@ interface EstacionamientoDetalle {
   templateUrl: './booking.page.html',
   styleUrls: ['./booking.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, ReactiveFormsModule, HttpClientModule, RouterModule]
+  imports: [CommonModule, IonicModule, ReactiveFormsModule, RouterModule]
 })
 export class BookingPage implements OnInit {
   reservaForm!: FormGroup;

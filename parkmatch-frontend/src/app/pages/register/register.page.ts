@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { AlertController, LoadingController } from '@ionic/angular';
 
@@ -19,8 +19,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule,
-    HttpClientModule
+    RouterModule
   ]
 })
 export class RegisterPage implements OnInit {
