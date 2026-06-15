@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
 
         if (expectedRoles && (!userRole || !expectedRoles.includes(userRole))) {
           // Si el rol no coincide con el esperado en la vista, redirigir al Home seguro
-          this.router.navigate(['/home']);
+          this.router.navigate(['/search']);
           return false;
         }
 
